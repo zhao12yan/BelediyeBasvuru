@@ -1,5 +1,22 @@
+/* Renkler Batman Belediyesi kurumsal sitesinden (batman.bel.tr) alınmıştır */
+:root {
+  --bb-mavi: #297be5;
+  --bb-mavi-koyu: #1b5fc1;
+  --bb-mavi-acik: #eaf2fd;
+  --bb-lacivert: #233044;
+  --bb-lacivert-koyu: #1a2433;
+  --bb-gri: #f2f2f2;
+  --bb-cizgi: #dddddd;
+  --bb-metin: #5e5e5e;
+  --bb-baslik: #222222;
+  --bb-kirmizi: #db4545;
+  --bb-turuncu: #e47929;
+  --bb-yaricap: 14px;
+  --bs-font-sans-serif: "Titillium Web", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
 html {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 @media (min-width: 768px) {
@@ -8,17 +25,31 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
-  margin-bottom: 60px;
+  font-family: var(--bs-font-sans-serif);
+  color: var(--bb-metin);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body > main,
+body > .container {
+  flex: 1 0 auto;
+}
+
+h1, h2, h3, h4, h5 {
+  color: var(--bb-baslik);
+  font-weight: 700;
+}
+
+a {
+  color: var(--bb-mavi);
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--bb-mavi);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +59,189 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/* ---------- Butonlar ---------- */
+.btn-bb-birincil {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--bb-mavi);
+  --bs-btn-border-color: var(--bb-mavi);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--bb-mavi-koyu);
+  --bs-btn-hover-border-color: var(--bb-mavi-koyu);
+  --bs-btn-active-bg: var(--bb-mavi-koyu);
+  --bs-btn-active-color: #fff;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: .55rem 1.4rem;
+}
+
+.btn-bb-cizgi {
+  --bs-btn-color: #fff;
+  --bs-btn-border-color: rgba(255, 255, 255, .7);
+  --bs-btn-hover-color: var(--bb-turuncu);
+  --bs-btn-hover-bg: #fff;
+  --bs-btn-hover-border-color: #fff;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: .55rem 1.4rem;
+}
+
+/* ---------- Üst şerit ---------- */
+.ust-serit {
+  background: var(--bb-lacivert);
+  color: rgba(255, 255, 255, .75);
+  font-size: .85rem;
+  padding: .4rem 0;
+}
+
+.alo-hap {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 999px;
+  padding: .15rem .8rem;
+}
+
+.alo-hap svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.alo-hap:hover {
+  background: #fff;
+  color: var(--bb-lacivert);
+}
+
+.ust-baglanti {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ust-baglanti:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Ana menü ---------- */
+.ana-menu {
+  background: #fff;
+  border-bottom: 1px solid var(--bb-cizgi);
+  padding: .6rem 0;
+}
+
+.ana-menu .nav-link {
+  color: var(--bb-baslik);
+  font-weight: 600;
+  padding: .5rem .9rem !important;
+}
+
+.ana-menu .nav-link:hover {
+  color: var(--bb-mavi);
+}
+
+.marka {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  text-decoration: none;
+}
+
+.marka-isaret {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bb-mavi);
+  flex-shrink: 0;
+}
+
+.marka-isaret svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.marka-yazi {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.marka-yazi strong {
+  color: var(--bb-lacivert);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.marka-yazi small {
+  color: var(--bb-mavi);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.marka-acik .marka-yazi strong {
+  color: #fff;
+}
+
+.marka-acik .marka-yazi small {
+  color: rgba(255, 255, 255, .7);
+}
+
+@media (max-width: 991.98px) {
+  .ana-menu .navbar-collapse {
+    padding-top: .75rem;
+  }
+
+  .ana-menu .btn-bb-birincil {
+    margin: .5rem 0 .25rem;
+  }
+}
+
+/* ---------- Alt bilgi ---------- */
+.site-footer {
+  background: var(--bb-lacivert);
+  color: rgba(255, 255, 255, .72);
+  padding: 3rem 0 0;
+  margin-top: auto;
+}
+
+.footer-baslik {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: .9rem;
+}
+
+.footer-liste li {
+  margin-bottom: .45rem;
+}
+
+.footer-liste a {
+  color: rgba(255, 255, 255, .72);
+  text-decoration: none;
+}
+
+.footer-liste a:hover {
+  color: #fff;
+}
+
+.footer-alt {
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  margin-top: 2rem;
+  padding: 1.1rem 0;
+  font-size: .85rem;
+  color: rgba(255, 255, 255, .55);
 }

@@ -5,42 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BelediyeBaşvuru</title>
     <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BelediyeBasvuru.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
+    <header class="site-header">
+        <div class="ust-serit">
+            <div class="container d-flex align-items-center justify-content-between">
+                <span class="d-none d-md-inline">Batman Belediyesi · Vatandaş Talep ve Şikayet Portalı</span>
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <a class="alo-hap" href="tel:153" aria-label="ALO 153 Çözüm Merkezi'ni ara">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" /></svg>
+                        ALO 153
+                    </a>
+                    @* K1-08: Identity eklenince giriş / kayıt bağlantıları buraya gelir *@
+                    <a class="ust-baglanti" href="#">Giriş Yap</a>
+                </div>
+            </div>
+        </div>
+
         @* K2-08 (Kişi 2): Ortak düzen ve navigasyon — Kurumsal, Hizmetler, Duyurular, Başvuru Yap, Başvuru Sorgula *@
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BelediyeBaşvuru</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg ana-menu">
+            <div class="container">
+                <a class="navbar-brand marka" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="marka-isaret" aria-hidden="true">
+                        <svg viewBox="0 0 40 40"><path d="M8 30h24M11 30V19h18v11M15 19v-2a5 5 0 0 1 10 0v2M20 12V9M17 30v-6h6v6" /></svg>
+                    </span>
+                    <span class="marka-yazi">
+                        <strong>BelediyeBaşvuru</strong>
+                        <small>Batman Belediyesi</small>
+                    </span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#anaMenu" aria-controls="anaMenu"
+                        aria-expanded="false" aria-label="Menüyü aç/kapat">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">KVKK / Gizlilik</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="anaMenu">
+                    <ul class="navbar-nav mx-lg-auto">
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#kategoriler">Hizmetler</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#nasil-calisir">Nasıl Çalışır?</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#duyurular">Duyurular</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">KVKK</a></li>
                     </ul>
+                    <a class="btn btn-bb-birincil" href="#">Başvuru Oluştur</a>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    @if (ViewData["TamGenislik"] is true)
+    {
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="container py-4">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
 
-    <footer class="border-top footer text-muted">
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - BelediyeBaşvuru · Batman Belediyesi Vatandaş Talep ve Şikayet Portalı (ders projesi) - <a asp-area="" asp-controller="Home" asp-action="Privacy">KVKK / Gizlilik</a>
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="marka marka-acik mb-3">
+                        <span class="marka-isaret" aria-hidden="true">
+                            <svg viewBox="0 0 40 40"><path d="M8 30h24M11 30V19h18v11M15 19v-2a5 5 0 0 1 10 0v2M20 12V9M17 30v-6h6v6" /></svg>
+                        </span>
+                        <span class="marka-yazi">
+                            <strong>BelediyeBaşvuru</strong>
+                            <small>Batman Belediyesi</small>
+                        </span>
+                    </div>
+                    <p class="mb-0">Talep, şikayet ve önerilerinizi fotoğraf ve konumla iletin; takip numaranızla her adımı izleyin.</p>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <h2 class="footer-baslik">Hızlı Erişim</h2>
+                    <ul class="list-unstyled footer-liste">
+                        <li><a href="#">Başvuru Oluştur</a></li>
+                        <li><a href="#sorgula">Başvuru Sorgula</a></li>
+                        <li><a href="#kategoriler">Hizmet Kategorileri</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">KVKK / Gizlilik</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-4">
+                    <h2 class="footer-baslik">İletişim</h2>
+                    <ul class="list-unstyled footer-liste">
+                        <li><a href="tel:153">ALO 153 Çözüm Merkezi</a></li>
+                        <li>7 gün 24 saat</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-alt">
+                &copy; 2026 BelediyeBaşvuru · Batman Üniversitesi Yazılım Mühendisliği Lab dönem projesidir; belediyenin resmî sitesi değildir.
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

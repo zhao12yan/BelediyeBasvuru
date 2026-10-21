@@ -1,9 +1,160 @@
 @{
     ViewData["Title"] = "Ana Sayfa";
+    ViewData["TamGenislik"] = true;
+
+    // Kategoriler şimdilik sabit; O-07 sonrası veritabanındaki Kategori tablosundan gelecek.
+    var kategoriler = new (string Ad, string Aciklama, string Ikon)[]
+    {
+        ("Yol ve Kaldırım", "Çukur, bozuk asfalt, kırık kaldırım", "M4 21 9 3M20 21 15 3M12 5v2M12 11v2M12 17v2"),
+        ("Temizlik ve Çöp", "Toplanmayan çöp, kirli alan", "M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"),
+        ("Su ve Kanalizasyon", "Arıza, sızıntı, taşkın", "M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"),
+        ("Aydınlatma", "Yanmayan sokak lambası", "M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"),
+        ("Park ve Bahçe", "Bakımsız yeşil alan, oyun parkı", "M12 21v-6M12 15l-3-3M12 3a5 5 0 0 0-5 5 4 4 0 0 0 1 7h8a4 4 0 0 0 1-7 5 5 0 0 0-5-5z"),
+        ("Zabıta", "İşgal, gürültü, denetim", "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4"),
+        ("Ulaşım", "Durak, güzergâh, trafik", "M5 17V6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v11M5 17h14M5 11h14M8 21v-4M16 21v-4"),
+        ("Diğer", "Öneri ve diğer talepler", "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"),
+    };
 }
 
-<div class="text-center">
-    <h1 class="display-5">BelediyeBaşvuru</h1>
-    <p class="lead">Batman Belediyesi Vatandaş Talep ve Şikayet Portalı</p>
-    <p class="text-muted">İskelet sürüm — sayfalar ekip tarafından geliştirilmektedir.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/anasayfa.css" asp-append-version="true" />
+}
+
+<section class="hero">
+    <div class="container hero-ic">
+        <p class="hero-ust">Talep · Şikayet · Öneri</p>
+        <h1 class="hero-baslik">
+            <span class="ince">Sesiniz</span>
+            <span class="kalin">Belediyenize Ulaşsın</span>
+        </h1>
+        <p class="hero-alt">Sorunu fotoğraf ve konumla bildirin, takip numaranızla her adımı izleyin.</p>
+
+        @* K3 (Kişi 3): ITakipSorguServisi hazır olunca form Basvuru/Sorgula'ya bağlanacak *@
+        <form class="sorgu-kutu" id="sorgula" action="#" method="get" role="search">
+            <label class="visually-hidden" for="takipNo">Takip numarası</label>
+            <input class="form-control" id="takipNo" name="takipNo" type="text" inputmode="text" autocomplete="off"
+                   placeholder="Takip numaranızı girin" />
+            <button class="btn btn-bb-birincil sorgu-buton" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5" /></svg>
+                <span>Sorgula</span>
+            </button>
+        </form>
+    </div>
+</section>
+
+<section class="hizli-islemler" aria-label="Hızlı işlemler">
+    <div class="container">
+        <div class="hizli-izgara">
+            <a class="hizli-kart vurgulu" href="#">
+                <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6M18 6a7 7 0 0 1 0 12" /></svg></span>
+                <span><strong>Başvuru Oluştur</strong><small>Fotoğraf ve konumla bildirin</small></span>
+            </a>
+            <a class="hizli-kart" href="#sorgula">
+                <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5" /></svg></span>
+                <span><strong>Başvuru Sorgula</strong><small>Takip numarasıyla durum</small></span>
+            </a>
+            <a class="hizli-kart" href="#">
+                <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12zM12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" /></svg></span>
+                <span><strong>Haritada Bildir</strong><small>Sorunun yerini işaretleyin</small></span>
+            </a>
+            <a class="hizli-kart" href="tel:153">
+                <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" /></svg></span>
+                <span><strong>ALO 153</strong><small>Çözüm merkezi, 7/24</small></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="bolum" id="kategoriler">
+    <div class="container">
+        <div class="bolum-baslik">
+            <h2>Hizmet Kategorileri</h2>
+            <p>Başvurunuz seçtiğiniz kategoriye göre ilgili müdürlüğe yönlendirilir.</p>
+        </div>
+        <div class="kategori-izgara">
+            @foreach (var k in kategoriler)
+            {
+                <a class="kategori-kart" href="#">
+                    <span class="kategori-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="@k.Ikon" /></svg></span>
+                    <strong>@k.Ad</strong>
+                    <small>@k.Aciklama</small>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="bolum bolum-gri" id="nasil-calisir">
+    <div class="container">
+        <div class="bolum-baslik">
+            <h2>Nasıl Çalışır?</h2>
+            <p>Başvurunuz dört adımda sonuçlanır; her adımda bilgilendirilirsiniz.</p>
+        </div>
+        <ol class="adimlar">
+            <li><span class="adim-no">1</span><strong>Bildirin</strong><small>Kategori seçin, açıklama, fotoğraf ve konum ekleyin.</small></li>
+            <li><span class="adim-no">2</span><strong>Takip numarası alın</strong><small>Başvurunuz kaydedilir, size özel numara verilir.</small></li>
+            <li><span class="adim-no">3</span><strong>Birime atanır</strong><small>İlgili müdürlük personeli başvuruyu inceler.</small></li>
+            <li><span class="adim-no">4</span><strong>Sonuçlanır</strong><small>Yapılan işlem ve sonuç size bildirilir.</small></li>
+        </ol>
+    </div>
+</section>
+
+<section class="bolum" id="duyurular">
+    <div class="container">
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-5">
+                <div class="duyuru-panel">
+                    <div class="duyuru-ust">
+                        <h2>Duyurular</h2>
+                        <span class="rozet">Örnek içerik</span>
+                    </div>
+                    @* K2 (Kişi 2): Duyuru modülü eklenince bu liste veritabanından gelecek *@
+                    <ul class="duyuru-liste">
+                        <li>
+                            <span class="duyuru-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6" /></svg></span>
+                            <span><strong>Portal deneme sürümünde</strong><small>Başvuru formu yakında açılacak</small></span>
+                        </li>
+                        <li>
+                            <span class="duyuru-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6" /></svg></span>
+                            <span><strong>Takip numarası ile sorgulama</strong><small>Giriş yapmadan başvuru durumu görülebilecek</small></span>
+                        </li>
+                        <li>
+                            <span class="duyuru-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6" /></svg></span>
+                            <span><strong>KVKK aydınlatma metni</strong><small>Kişisel verilerin işlenmesi hakkında bilgi</small></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="sehir-izgara">
+                    <figure class="sehir-kart">
+                        <img src="~/img/anasayfa/petrol-iscileri-aniti.jpg" alt="Batman'da parkta bulunan petrol işçileri anıtı" width="900" height="675" loading="lazy" />
+                        <figcaption><strong>Petrolün başkenti</strong><span>Şehrin hafızasına birlikte sahip çıkalım.</span></figcaption>
+                    </figure>
+                    <figure class="sehir-kart">
+                        <img src="~/img/anasayfa/ataturk-parki.jpg" alt="Atatürk Parkı'nda gece ışıklandırılmış Batman yazısı" width="900" height="506" loading="lazy" />
+                        <figcaption><strong>Yaşanabilir parklar</strong><span>Yeşil alanlardaki sorunları bize bildirin.</span></figcaption>
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cagri-bant">
+    <div class="container cagri-ic">
+        <div>
+            <h2>Mahallenizde bir sorun mu var?</h2>
+            <p>Birkaç dakikada bildirin; çözüm sürecini adım adım takip edin.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-light cagri-buton" href="#">Başvuru Oluştur</a>
+            <a class="btn btn-bb-cizgi" href="#sorgula">Başvuru Sorgula</a>
+        </div>
+    </div>
+</section>
+
+<p class="foto-kaynak container">
+    Fotoğraflar: Dûrzan cîrano (CC BY-SA 3.0), Zalasem1 (CC BY 4.0), Kushared (CC BY-SA 4.0) · Wikimedia Commons.
+    Ayrıntılar: <code>wwwroot/img/anasayfa/KAYNAKLAR.md</code>
+</p>
