@@ -1,4 +1,5 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// site.js — tüm sayfalarda yüklenen ortak JavaScript dosyası (_Layout.cshtml'in en altında çağrılır).
+// Sayfaya özel kodu buraya değil, o sayfanın @section Scripts { ... } bölümüne yazın.
+// Not: Bootstrap ve jQuery bu dosyadan ÖNCE yüklenir; burada kullanılabilirler.
 
-// Write your JavaScript code.
+// Belgeler: https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification

@@ -1,12 +1,21 @@
+<!--
+  BelediyeBasvuru.Infrastructure — altyapı katmanı.
+  İçinde: veritabanı (EF Core, AppDbContext, migration'lar) ve servislerin gerçek kodları.
+  Core'u bilir; Web'i bilmez.
+-->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <!-- Core projesindeki sınıfları (Kullanici vb.) kullanabilmek için referans. -->
     <ProjectReference Include="..\BelediyeBasvuru.Core\BelediyeBasvuru.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- ASP.NET Core çerçevesi (IdentityDbContext gibi sınıflar için gerekli). -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- Identity'nin EF Core ile çalışan sürümü: AspNetUsers, AspNetRoles tablolarını sağlar. -->
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
+    <!-- EF Core'un SQL Server sağlayıcısı: C# sorgularını SQL Server'a çevirir. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
     <!-- SqlClient 6.1.7 açıklı 9.0.11'i çekiyor (CVE-2026-84008, CVE-2026-70162); düzeltilmiş sürüme sabitlendi -->
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />

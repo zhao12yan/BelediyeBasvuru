@@ -49,6 +49,18 @@ scripts/                           Yedekleme / geri yükleme betikleri (Artım 2
 
 Katman kuralı: **Web → Infrastructure → Core**. Core hiçbir projeye referans vermez.
 
+## Hızlı başlangıç
+
+> **Yeni katıldıysanız önce [BASLANGIC.md](BASLANGIC.md) dosyasını okuyun** — depoyu çekme, açma, çalıştırma ve "hangi kod nerede" tablosu orada.
+
+Docker Desktop kuruluysa tek komut yeterli (SDK veya SQL Server kurmanız gerekmez):
+
+```bash
+docker compose up --build
+```
+
+Ardından tarayıcıda **http://localhost:8080**.
+
 ## Kurulum (geliştirici makinesi, Windows)
 
 Gerekenler: [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), Visual Studio 2022/2026 Community

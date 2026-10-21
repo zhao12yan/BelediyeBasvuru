@@ -1,11 +1,15 @@
-﻿@model ErrorViewModel
+﻿@* Hata sayfası. HomeController.Error() bu görünümü ErrorViewModel ile çağırır. *@
+@* "@model" → bu sayfanın kullandığı veri tipi; içinde "Model.xxx" diye erişilir. *@
+@model ErrorViewModel
 @{
+    // Tarayıcı sekmesindeki başlık.
     ViewData["Title"] = "Error";
 }
 
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
+@* İstek numarası varsa göster; destek için logda aranabilir. *@
 @if (Model.ShowRequestId)
 {
     <p>
@@ -13,6 +17,7 @@
     </p>
 }
 
+@* Aşağısı şablonun standart açıklaması: ayrıntılı hata için Development ortamı kullanılır. *@
 <h3>Development Mode</h3>
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.

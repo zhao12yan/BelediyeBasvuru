@@ -1,39 +1,49 @@
-/* Renkler Batman Belediyesi kurumsal sitesinden (batman.bel.tr) alınmıştır */
+/* site.css — TÜM sayfalarda geçerli ortak stiller (_Layout.cshtml yükler).
+   Sayfaya özel stiller ayrı dosyada olur (ör. anasayfa.css).
+   Renkler Batman Belediyesi kurumsal sitesinden (batman.bel.tr) alınmıştır */
+
+/* :root → CSS değişkenleri. Bir rengi değiştirmek için SADECE burayı değiştirin;
+   diğer dosyalar var(--bb-mavi) gibi bu adları kullanır. */
 :root {
-  --bb-mavi: #297be5;
-  --bb-mavi-koyu: #1b5fc1;
-  --bb-mavi-acik: #eaf2fd;
-  --bb-lacivert: #233044;
-  --bb-lacivert-koyu: #1a2433;
-  --bb-gri: #f2f2f2;
-  --bb-cizgi: #dddddd;
-  --bb-metin: #5e5e5e;
-  --bb-baslik: #222222;
-  --bb-kirmizi: #db4545;
-  --bb-turuncu: #e47929;
-  --bb-yaricap: 14px;
+  --bb-mavi: #297be5;          /* ana renk: butonlar, bağlantılar, ikonlar */
+  --bb-mavi-koyu: #1b5fc1;     /* butonun üzerine gelince (hover) */
+  --bb-mavi-acik: #eaf2fd;     /* ikon arka planları */
+  --bb-lacivert: #233044;      /* üst şerit ve alt bilgi */
+  --bb-lacivert-koyu: #1a2433; /* hero karartma katmanı */
+  --bb-gri: #f2f2f2;           /* gri bölüm arka planı */
+  --bb-cizgi: #dddddd;         /* kart kenarlıkları */
+  --bb-metin: #5e5e5e;         /* normal yazı rengi */
+  --bb-baslik: #222222;        /* başlık rengi */
+  --bb-kirmizi: #db4545;       /* duyuru / "Başvuru Oluştur" vurgusu */
+  --bb-turuncu: #e47929;       /* çağrı bandı */
+  --bb-yaricap: 14px;          /* kart köşe yuvarlaklığı */
+  /* Bootstrap'ın yazı tipi değişkenini ezerek her yerde Titillium Web kullanılmasını sağlar. */
   --bs-font-sans-serif: "Titillium Web", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Temel yazı boyutu: telefonda 15px; rem birimleri buna göre hesaplanır (1rem = 15px). */
 html {
   font-size: 15px;
 }
 
+/* Tablet ve üstü (768px+) ekranlarda 16px. */
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
 }
 
+/* body'yi dikey flex yapıyoruz: içerik kısa olsa bile alt bilgi ekranın en altına iner. */
 body {
   font-family: var(--bs-font-sans-serif);
   color: var(--bb-metin);
   background: #fff;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* en az ekran yüksekliği kadar */
 }
 
+/* İçerik alanı boş kalan yüksekliği doldurur → footer aşağı itilir. */
 body > main,
 body > .container {
   flex: 1 0 auto;
@@ -48,10 +58,12 @@ a {
   color: var(--bb-mavi);
 }
 
+/* Klavyeyle (Tab) gezinirken odaklanan öğenin etrafında mavi halka: erişilebilirlik için gerekli. */
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--bb-mavi);
 }
 
+/* Şablondan gelen: Bootstrap "floating label" formlarında ipucu yazısının hizası. */
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
@@ -62,6 +74,8 @@ a {
 }
 
 /* ---------- Butonlar ---------- */
+/* Bootstrap 5 butonları --bs-btn-* değişkenleriyle renklenir; biz bu değişkenleri kendi renklerimizle dolduruyoruz.
+   Kullanım: <a class="btn btn-bb-birincil">  (mavi, hap şeklinde) */
 .btn-bb-birincil {
   --bs-btn-color: #fff;
   --bs-btn-bg: var(--bb-mavi);
@@ -76,6 +90,7 @@ a {
   padding: .55rem 1.4rem;
 }
 
+/* Koyu/renkli zemin üzerinde beyaz çerçeveli buton (ör. turuncu bant). */
 .btn-bb-cizgi {
   --bs-btn-color: #fff;
   --bs-btn-border-color: rgba(255, 255, 255, .7);
@@ -145,6 +160,7 @@ a {
   color: var(--bb-mavi);
 }
 
+/* Logo = mavi kare ikon (.marka-isaret) + iki satır yazı (.marka-yazi). */
 .marka {
   display: inline-flex;
   align-items: center;
@@ -192,6 +208,7 @@ a {
   text-transform: uppercase;
 }
 
+/* Koyu zemindeki (alt bilgi) logo için açık renkli yazı. */
 .marka-acik .marka-yazi strong {
   color: #fff;
 }
@@ -200,6 +217,7 @@ a {
   color: rgba(255, 255, 255, .7);
 }
 
+/* 992px'ten dar ekranlarda menü katlanır; açılınca biraz boşluk bırak. */
 @media (max-width: 991.98px) {
   .ana-menu .navbar-collapse {
     padding-top: .75rem;
@@ -215,7 +233,7 @@ a {
   background: var(--bb-lacivert);
   color: rgba(255, 255, 255, .72);
   padding: 3rem 0 0;
-  margin-top: auto;
+  margin-top: auto; /* flex düzeninde kendini en alta iter */
 }
 
 .footer-baslik {

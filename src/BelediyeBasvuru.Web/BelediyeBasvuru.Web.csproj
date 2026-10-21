@@ -1,10 +1,17 @@
+<!--
+  BelediyeBasvuru.Web — kullanıcının gördüğü katman (ASP.NET Core MVC).
+  İçinde: Controllers (istekleri karşılar), Views (Razor sayfaları), wwwroot (CSS, JS, resim).
+  "Microsoft.NET.Sdk.Web" → bu bir web uygulamasıdır; dotnet run ile web sunucusu açılır.
+-->
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <!-- "dotnet user-secrets" komutunun gizli ayarları saklarken kullandığı kimlik. Parolalar depoya girmez. -->
     <UserSecretsId>belediyebasvuru-web-2026</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Katman kuralı: Web → Infrastructure → Core. Web ikisini de bilir. -->
     <ProjectReference Include="..\BelediyeBasvuru.Core\BelediyeBasvuru.Core.csproj" />
     <ProjectReference Include="..\BelediyeBasvuru.Infrastructure\BelediyeBasvuru.Infrastructure.csproj" />
   </ItemGroup>
@@ -12,6 +19,7 @@
   <ItemGroup>
     <!-- Migration komutları (dotnet ef) için gerekli; yayına çıkmaz -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
+      <!-- "all" → bu paket sadece geliştirme sırasında kullanılır, başka projelere taşınmaz. -->
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

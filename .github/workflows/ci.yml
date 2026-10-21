@@ -1,20 +1,32 @@
+# ci.yml — GitHub Actions "Sürekli Entegrasyon" (CI) iş akışı.
+# Her push ve PR'da GitHub'ın sunucusunda kendiliğinden çalışır; sonucu depoda "Actions" sekmesinde görünür.
+# Yeşil tik = derleme ve testler geçti. Kırmızı çarpı = bir şey bozuldu; PR birleştirilmemeli.
+
+# İş akışının adı (Actions sekmesinde görünür).
 name: CI
 
+# Ne zaman çalışsın?
 on:
+  # main dalına PR açıldığında veya PR'a yeni commit geldiğinde.
   pull_request:
     branches: [main]
+  # main dalına doğrudan push yapıldığında.
   push:
     branches: [main]
 
 jobs:
+  # ===== İŞ 1: Derle ve test et (gerçek SQL Server ile) =====
   build-test:
     name: Derle ve test et
+    # Ubuntu Linux sanal makinesinde çalış (Docker hazır gelir).
     runs-on: ubuntu-latest
 
     steps:
+      # Depodaki kodu sanal makineye indir.
       - name: Kodu çek
         uses: actions/checkout@v4
 
+      # .NET 10 SDK'yı kur.
       - name: .NET 10 SDK kur
         uses: actions/setup-dotnet@v4
         with:
@@ -24,24 +36,68 @@ jobs:
       # Parola her çalıştırmada rastgele üretilir; depoda parola yoktur.
       - name: SQL Server 2022 konteynerini başlat
         run: |
+          # Rastgele, karmaşıklık kuralına uyan bir parola üret.
           SA_PAROLA="Ci$(openssl rand -hex 12)Aa1!"
+          # Parolayı loglarda *** olarak gizle.
           echo "::add-mask::$SA_PAROLA"
+          # SQL Server konteynerini arka planda başlat.
           docker run -d --name sql \
             -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD="$SA_PAROLA" \
             -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest
+          # Sunucu sorgu kabul edene kadar en fazla 30 x 3 sn bekle.
           for i in $(seq 1 30); do
             if docker exec sql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$SA_PAROLA" -Q "SELECT 1" > /dev/null 2>&1; then
               echo "SQL Server hazır."; break
             fi
             echo "SQL Server bekleniyor ($i/30)..."; sleep 3
           done
+          # Bağlantı dizesini sonraki adımların (testlerin) okuyacağı ortam değişkenine yaz.
           echo "ConnectionStrings__Default=Server=localhost,1433;Database=BelediyeBasvuru_CI;User Id=sa;Password=$SA_PAROLA;TrustServerCertificate=True" >> "$GITHUB_ENV"
 
+      # NuGet paketlerini indir.
       - name: Bağımlılıkları geri yükle
         run: dotnet restore BelediyeBasvuru.sln
 
+      # Tüm çözümü Release modunda derle (restore tekrar yapılmasın).
       - name: Derle
         run: dotnet build BelediyeBasvuru.sln --no-restore -c Release
 
+      # xUnit testlerini çalıştır. Bir test kalırsa iş kırmızı olur.
       - name: Testleri çalıştır
         run: dotnet test BelediyeBasvuru.sln --no-build -c Release --verbosity normal
+
+  # ===== İŞ 2: Docker ile "tek komutla çalışıyor mu?" kontrolü =====
+  # Ekipteki herkesin kullandığı "docker compose up --build" komutunun bozulmadığını doğrular.
+  docker:
+    name: Docker compose ile çalıştır
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu çek
+        uses: actions/checkout@v4
+
+      # docker-compose.yml'deki db + web konteynerlerini derle ve başlat; hazır olana kadar bekle.
+      - name: Konteynerleri derle ve başlat
+        run: docker compose up -d --build --wait --wait-timeout 300
+
+      # Sayfa, stil dosyası ve fotoğraf gerçekten açılıyor mu? (curl -f → 200 değilse hata verir)
+      - name: Ana sayfa, CSS ve fotoğraf açılıyor mu?
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS -o /dev/null http://localhost:8080/ && break
+            echo "Web bekleniyor ($i/30)..."; sleep 2
+          done
+          curl -fsS http://localhost:8080/ | grep -q "Hizmet Kategorileri"
+          curl -fsS -o /dev/null http://localhost:8080/css/anasayfa.css
+          curl -fsS -o /dev/null http://localhost:8080/img/anasayfa/batman-panorama.jpg
+          echo "Docker ile uygulama çalışıyor."
+
+      # Bir adım başarısız olursa hatayı görebilmek için konteyner loglarını yazdır.
+      - name: Konteyner logları (hata olursa)
+        if: failure()
+        run: docker compose logs
+
+      # Her durumda konteynerleri ve veriyi temizle.
+      - name: Kapat
+        if: always()
+        run: docker compose down -v

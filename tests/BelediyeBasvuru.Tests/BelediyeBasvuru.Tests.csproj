@@ -1,26 +1,39 @@
+<!--
+  BelediyeBasvuru.Tests — xUnit test projesi.
+  Çalıştırmak için: dotnet test   (veya Visual Studio / VS Code'da Test Explorer)
+-->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Bu proje NuGet paketi olarak yayınlanmaz. -->
     <IsPackable>false</IsPackable>
+    <!-- Bu bir test projesidir; dotnet test bunu çalıştırır. -->
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Test altyapısı (dotnet test komutunun testleri bulup çalıştırması için). -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <!-- xUnit: [Fact], Assert.Equal gibi test araçları. -->
     <PackageReference Include="xunit" Version="2.9.3" />
+    <!-- Visual Studio / VS Code Test Explorer'ın xUnit testlerini görmesi için. -->
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!-- Moq: sahte (mock) nesne üretmek için; servisleri test ederken kullanılacak. -->
     <PackageReference Include="Moq" Version="4.20.72" />
+    <!-- WebApplicationFactory: web uygulamasını bellekte çalıştırıp HTTP isteği atmak için. -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Her test dosyasının başına "using Xunit;" yazmaya gerek kalmasın. -->
     <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Test edilecek projeler. -->
     <ProjectReference Include="..\..\src\BelediyeBasvuru.Core\BelediyeBasvuru.Core.csproj" />
     <ProjectReference Include="..\..\src\BelediyeBasvuru.Infrastructure\BelediyeBasvuru.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\BelediyeBasvuru.Web\BelediyeBasvuru.Web.csproj" />

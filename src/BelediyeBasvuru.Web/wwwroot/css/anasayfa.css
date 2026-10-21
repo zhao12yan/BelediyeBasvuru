@@ -1,13 +1,19 @@
-/* Ana sayfa — renk değişkenleri site.css içinde (:root) */
+/* anasayfa.css — SADECE ana sayfa (Views/Home/Index.cshtml) için stiller.
+   Index.cshtml bu dosyayı @section Styles ile yükler. Renk değişkenleri site.css içinde (:root) */
 
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
   color: #fff;
+  /* Üç katman üst üste (ilk yazılan en üstte):
+     1) yarı saydam lacivert→mavi renk geçişi: yazı fotoğraf üzerinde okunsun diye
+     2) Batman panorama fotoğrafı (yerel dosya), ekranı kaplayacak şekilde (cover)
+     3) fotoğraf yüklenemezse düz lacivert */
   background:
     linear-gradient(180deg, rgba(26, 36, 51, .72) 0%, rgba(26, 36, 51, .45) 45%, rgba(27, 95, 193, .78) 100%),
     url("../img/anasayfa/batman-panorama.jpg") center 70% / cover no-repeat,
     var(--bb-lacivert);
+  /* Alttaki 7.5rem boşluk: hızlı işlem kartları buraya taşıyor. */
   padding: 4.5rem 0 7.5rem;
   text-align: center;
 }
@@ -40,6 +46,8 @@
   text-transform: uppercase;
 }
 
+/* Belediye sitesindeki gibi: ilk satır ince, ikinci satır kalın.
+   clamp(en küçük, tercih, en büyük) → ekran genişliğine göre büyüyüp küçülen yazı boyutu. */
 .hero-baslik .ince {
   font-weight: 300;
   font-size: clamp(2rem, 6vw, 3.6rem);
@@ -58,6 +66,7 @@
   max-width: 560px;
 }
 
+/* Beyaz, yuvarlak köşeli arama kutusu: solda giriş alanı, sağda buton (flex ile yan yana). */
 .sorgu-kutu {
   display: flex;
   gap: .5rem;
@@ -95,6 +104,7 @@
   stroke-linecap: round;
 }
 
+/* Telefonda (576px altı) butonda sadece büyüteç ikonu kalsın, "Sorgula" yazısı gizlensin. */
 @media (max-width: 575.98px) {
   .sorgu-buton span {
     display: none;
@@ -103,11 +113,12 @@
 
 /* ---------- Hızlı işlemler (hero altına taşan kartlar) ---------- */
 .hizli-islemler {
-  margin-top: -4rem;
+  margin-top: -4rem;  /* negatif boşluk: kartları yukarı çekip hero'nun üzerine bindirir */
   position: relative;
-  z-index: 2;
+  z-index: 2;         /* hero'nun önünde görünsün */
 }
 
+/* CSS Grid: 4 eşit sütun. Aşağıdaki @media kuralları dar ekranda 2'ye, sonra 1'e düşürür. */
 .hizli-izgara {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -127,6 +138,7 @@
   transition: transform .15s ease, box-shadow .15s ease;
 }
 
+/* Fare üzerine gelince kart 3px yukarı kalkar ve gölgesi büyür. */
 .hizli-kart:hover {
   transform: translateY(-3px);
   box-shadow: 0 16px 36px rgba(35, 48, 68, .18);
@@ -155,6 +167,8 @@
   flex-shrink: 0;
 }
 
+/* Tüm SVG ikonlar çizgi (stroke) ile çizilir; renk "currentColor" ile kapsayıcının yazı renginden gelir.
+   Böylece ikonun rengini değiştirmek için sadece kapsayıcının "color" değerini değiştirmek yeter. */
 .hizli-ikon svg,
 .kategori-ikon svg,
 .duyuru-ikon svg {
@@ -167,6 +181,7 @@
   stroke-linejoin: round;
 }
 
+/* "Başvuru Oluştur" kartı: belediye sitesindeki kırmızı megafon düğmesi gibi öne çıkar. */
 .hizli-kart.vurgulu .hizli-ikon {
   background: var(--bb-kirmizi);
   color: #fff;
@@ -205,6 +220,7 @@
   margin-bottom: .5rem;
 }
 
+/* ::after → başlığın altına HTML yazmadan kısa mavi çizgi ekler. */
 .bolum-baslik h2::after {
   content: "";
   display: block;
@@ -315,6 +331,7 @@
   margin-bottom: .6rem;
 }
 
+/* Son adım ("Sonuçlanır") mavi; diğerleri lacivert. */
 .adimlar li:last-child .adim-no {
   background: var(--bb-mavi);
 }
@@ -418,6 +435,7 @@
   background: var(--bb-lacivert);
 }
 
+/* Fotoğraf kartın tamamını kaplar; object-fit: cover → oran bozulmadan kırpılır. */
 .sehir-kart img {
   position: absolute;
   inset: 0;
@@ -426,6 +444,7 @@
   object-fit: cover;
 }
 
+/* Fotoğrafın altında yazının okunması için şeffaftan koyuya geçiş. */
 .sehir-kart figcaption {
   position: absolute;
   inset: auto 0 0 0;
@@ -455,6 +474,7 @@
 }
 
 /* ---------- Turuncu çağrı bandı ---------- */
+/* Turuncu katman soldan sağa incelir; sağda gün batımı fotoğrafı (minare) hafifçe görünür. */
 .cagri-bant {
   background:
     linear-gradient(90deg, rgba(228, 121, 41, .96) 0%, rgba(228, 121, 41, .82) 60%, rgba(228, 121, 41, .55) 100%),

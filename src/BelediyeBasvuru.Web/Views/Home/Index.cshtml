@@ -1,8 +1,15 @@
+@* Index.cshtml — ANA SAYFA. Adres: "/" → HomeController.Index()
+   Bölümler (yukarıdan aşağı): hero + sorgu kutusu, hızlı işlemler, kategoriler,
+   nasıl çalışır, duyurular + şehir kartları, turuncu çağrı bandı, fotoğraf atfı.
+   Stiller: wwwroot/css/anasayfa.css  ·  Fotoğraflar: wwwroot/img/anasayfa/ *@
 @{
+    // Sekme başlığı: "Ana Sayfa - BelediyeBaşvuru"
     ViewData["Title"] = "Ana Sayfa";
+    // _Layout'a "içeriği kenardan kenara yay" der (hero tam genişlik olsun diye).
     ViewData["TamGenislik"] = true;
 
     // Kategoriler şimdilik sabit; O-07 sonrası veritabanındaki Kategori tablosundan gelecek.
+    // Her eleman: (Ad, kısa Açıklama, SVG ikonunun çizim yolu "d" değeri).
     var kategoriler = new (string Ad, string Aciklama, string Ikon)[]
     {
         ("Yol ve Kaldırım", "Çukur, bozuk asfalt, kırık kaldırım", "M4 21 9 3M20 21 15 3M12 5v2M12 11v2M12 17v2"),
@@ -16,10 +23,12 @@
     };
 }
 
+@* Bu sayfaya özel CSS'i _Layout'taki RenderSectionAsync("Styles") noktasına ekle. *@
 @section Styles {
     <link rel="stylesheet" href="~/css/anasayfa.css" asp-append-version="true" />
 }
 
+@* ===== HERO: arka planda Batman panoraması (CSS'te), başlık ve takip numarası kutusu ===== *@
 <section class="hero">
     <div class="container hero-ic">
         <p class="hero-ust">Talep · Şikayet · Öneri</p>
@@ -30,7 +39,9 @@
         <p class="hero-alt">Sorunu fotoğraf ve konumla bildirin, takip numaranızla her adımı izleyin.</p>
 
         @* K3 (Kişi 3): ITakipSorguServisi hazır olunca form Basvuru/Sorgula'ya bağlanacak *@
+        @* method="get" → numara adres çubuğunda görünür (?takipNo=...); sorgulama için uygundur. *@
         <form class="sorgu-kutu" id="sorgula" action="#" method="get" role="search">
+            @* Ekranda görünmez ama ekran okuyucular için alanın adını söyler (erişilebilirlik). *@
             <label class="visually-hidden" for="takipNo">Takip numarası</label>
             <input class="form-control" id="takipNo" name="takipNo" type="text" inputmode="text" autocomplete="off"
                    placeholder="Takip numaranızı girin" />
@@ -42,6 +53,8 @@
     </div>
 </section>
 
+@* ===== HIZLI İŞLEMLER: hero'nun altına taşan 4 kart (negatif margin ile, bkz. anasayfa.css) ===== *@
+@* Kişi 2: href="#" olanlar ilgili sayfalar yazılınca asp-controller/asp-action ile değiştirilecek. *@
 <section class="hizli-islemler" aria-label="Hızlı işlemler">
     <div class="container">
         <div class="hizli-izgara">
@@ -65,6 +78,7 @@
     </div>
 </section>
 
+@* ===== HİZMET KATEGORİLERİ: yukarıdaki "kategoriler" dizisinden döngüyle üretilir ===== *@
 <section class="bolum" id="kategoriler">
     <div class="container">
         <div class="bolum-baslik">
@@ -72,6 +86,7 @@
             <p>Başvurunuz seçtiğiniz kategoriye göre ilgili müdürlüğe yönlendirilir.</p>
         </div>
         <div class="kategori-izgara">
+            @* Her kategori için bir kart. "@k.Ad" → C# değerini HTML'e (güvenli biçimde) yazar. *@
             @foreach (var k in kategoriler)
             {
                 <a class="kategori-kart" href="#">
@@ -84,6 +99,7 @@
     </div>
 </section>
 
+@* ===== NASIL ÇALIŞIR: başvurunun 4 adımı (gri arka plan) ===== *@
 <section class="bolum bolum-gri" id="nasil-calisir">
     <div class="container">
         <div class="bolum-baslik">
@@ -99,8 +115,10 @@
     </div>
 </section>
 
+@* ===== DUYURULAR (solda) + ŞEHİR KARTLARI (sağda) ===== *@
 <section class="bolum" id="duyurular">
     <div class="container">
+        @* col-lg-5 / col-lg-7 → geniş ekranda 12 birimin 5'i ve 7'si; telefonda alt alta. *@
         <div class="row g-4 align-items-stretch">
             <div class="col-lg-5">
                 <div class="duyuru-panel">
@@ -126,6 +144,8 @@
                 </div>
             </div>
             <div class="col-lg-7">
+                @* Fotoğraflar yerel dosya (internet gerekmez). loading="lazy" → ekrana gelince yüklenir.
+                   width/height → yüklenirken sayfanın zıplamaması için. Lisanslar: img/anasayfa/KAYNAKLAR.md *@
                 <div class="sehir-izgara">
                     <figure class="sehir-kart">
                         <img src="~/img/anasayfa/petrol-iscileri-aniti.jpg" alt="Batman'da parkta bulunan petrol işçileri anıtı" width="900" height="675" loading="lazy" />
@@ -141,6 +161,7 @@
     </div>
 </section>
 
+@* ===== TURUNCU ÇAĞRI BANDI: gün batımı fotoğrafı üzerinde turuncu katman ===== *@
 <section class="cagri-bant">
     <div class="container cagri-ic">
         <div>
@@ -154,6 +175,7 @@
     </div>
 </section>
 
+@* CC BY / CC BY-SA lisansları fotoğraf sahibinin adının yazılmasını şart koşar; bu satırı SİLMEYİN. *@
 <p class="foto-kaynak container">
     Fotoğraflar: Dûrzan cîrano (CC BY-SA 3.0), Zalasem1 (CC BY 4.0), Kushared (CC BY-SA 4.0) · Wikimedia Commons.
     Ayrıntılar: <code>wwwroot/img/anasayfa/KAYNAKLAR.md</code>
