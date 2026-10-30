@@ -1,0 +1,58 @@
+# docker-compose.yml — projeyi TEK KOMUTLA çalıştırır: web uygulaması + SQL Server 2022.
+#
+#   Başlat:   docker compose up --build        → tarayıcıda http://localhost:8080
+#   Durdur:   Ctrl+C   (veya başka terminalde: docker compose down)
+#   Sıfırla:  docker compose down -v           → veritabanı verisi de silinir
+#
+# Bilgisayarınıza .NET SDK veya SQL Server kurmanız GEREKMEZ; sadece Docker Desktop yeterli.
+# Ayrıntılı anlatım: BASLANGIC.md
+
+services:
+
+  # ---------- Veritabanı: Microsoft SQL Server 2022 (Linux konteyneri) ----------
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    # SQL Server imajı sadece Intel/AMD (amd64) için var. Apple Silicon (M1/M2) Mac'te Rosetta ile çalışır.
+    platform: linux/amd64
+    environment:
+      # Microsoft lisans sözleşmesini kabul et (zorunlu).
+      ACCEPT_EULA: "Y"
+      # "sa" yöneticisinin parolası. SADECE yerel geliştirme konteyneri içindir; port dışarı açılmaz.
+      # Değiştirmek isterseniz .env.ornek dosyasını .env adıyla kopyalayıp SA_PAROLA yazın (.env depoya girmez).
+      MSSQL_SA_PASSWORD: ${SA_PAROLA:-Yerel_Gelistirme_2026!}
+    volumes:
+      # Veritabanı dosyaları "sqlveri" adlı kalıcı alanda tutulur; konteyner silinse de veri kalır.
+      - sqlveri:/var/opt/mssql
+    # SSMS / Azure Data Studio ile bağlanmak isterseniz alttaki iki satırın başındaki # işaretini kaldırın
+    # (sunucu: localhost,1433  kullanıcı: sa).
+    # ports:
+    #   - "1433:1433"
+    healthcheck:
+      # SQL Server sorguya cevap veriyor mu? Veriyorsa "sağlıklı" sayılır ve web başlatılır.
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  # ---------- Web uygulaması: ASP.NET Core MVC ----------
+  web:
+    # Bu klasördeki Dockerfile ile imajı derle.
+    build: .
+    depends_on:
+      db:
+        # Veritabanı hazır (healthcheck geçti) olmadan web başlamasın.
+        condition: service_healthy
+    environment:
+      # Development → hata olursa ayrıntılı hata sayfası gösterilir (sadece geliştirme için).
+      ASPNETCORE_ENVIRONMENT: Development
+      # appsettings.json'daki LocalDB adresini ezer: konteyner içinde sunucu adı "db" (yukarıdaki servis).
+      # "__" (iki alt çizgi) → ayarlardaki ":" karşılığıdır (ConnectionStrings:Default).
+      ConnectionStrings__Default: "Server=db,1433;Database=BelediyeBasvuru;User Id=sa;Password=${SA_PAROLA:-Yerel_Gelistirme_2026!};TrustServerCertificate=True"
+    ports:
+      # Bilgisayarınızın 8080 portu → konteynerin 8080 portu.  Tarayıcı: http://localhost:8080
+      - "8080:8080"
+
+volumes:
+  # Veritabanı verisinin kalıcı saklandığı alan.
+  sqlveri:

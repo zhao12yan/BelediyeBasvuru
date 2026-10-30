@@ -1,0 +1,20 @@
+# .dockerignore — Docker imajı derlenirken KOPYALANMAYACAK dosyalar.
+# Derleme çıktıları (konteyner kendisi derler; Windows'taki bin/obj karışmasın).
+**/bin/
+**/obj/
+# Editör ve git klasörleri.
+.git/
+.github/
+.vs/
+.vscode/
+.idea/
+.config/
+# İmajda gerekmeyenler.
+tests/
+docs/
+scripts/
+*.md
+!src/**/*.md
+# Gizli ayarlar asla imaja girmez.
+.env
+**/*.user

@@ -1,0 +1,140 @@
+﻿@* _Layout.cshtml — TÜM sayfaların ortak şablonu (üst menü + içerik + alt bilgi).
+   Her sayfanın içeriği aşağıdaki @RenderBody() satırının yerine yerleşir.
+   Hangi sayfanın bu şablonu kullandığı Views/_ViewStart.cshtml'de ayarlıdır. *@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    @* Telefonda sayfanın küçültülmeden, ekran genişliğinde açılması için. *@
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @* Sekme başlığı: her sayfa ViewData["Title"] ile kendi adını verir. *@
+    <title>@ViewData["Title"] - BelediyeBaşvuru</title>
+    <script type="importmap"></script>
+    @* "~/" → wwwroot klasörü. asp-append-version → dosya değişince tarayıcı eski kopyayı kullanmasın. *@
+    @* 1) Yerel yazı tipi (internet gerekmez). *@
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
+    @* 2) Bootstrap 5: hazır ızgara (row/col), buton, menü bileşenleri. *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* 3) Bizim ortak stillerimiz (renkler, menü, alt bilgi). Bootstrap'tan SONRA gelir ki onu ezebilsin. *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* 4) .cshtml.css dosyalarından otomatik üretilen stil paketi. *@
+    <link rel="stylesheet" href="~/BelediyeBasvuru.Web.styles.css" asp-append-version="true" />
+    @* 5) Sayfaya özel CSS: sayfa @section Styles { ... } yazarsa buraya eklenir (ör. anasayfa.css). *@
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header class="site-header">
+        @* Üst lacivert şerit: ALO 153 ve giriş bağlantısı. *@
+        <div class="ust-serit">
+            <div class="container d-flex align-items-center justify-content-between">
+                <span class="d-none d-md-inline">Batman Belediyesi · Vatandaş Talep ve Şikayet Portalı</span>
+                <div class="d-flex align-items-center gap-3 ms-auto">
+                    <a class="alo-hap" href="tel:153" aria-label="ALO 153 Çözüm Merkezi'ni ara">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" /></svg>
+                        ALO 153
+                    </a>
+                    @* K1-08: Identity eklenince giriş / kayıt bağlantıları buraya gelir *@
+                    <a class="ust-baglanti" href="#">Giriş Yap</a>
+                </div>
+            </div>
+        </div>
+
+        @* K2-08 (Kişi 2): Ortak düzen ve navigasyon — Kurumsal, Hizmetler, Duyurular, Başvuru Yap, Başvuru Sorgula *@
+        @* navbar-expand-lg → geniş ekranda menü yan yana; dar ekranda (telefon) "hamburger" butonuna katlanır. *@
+        <nav class="navbar navbar-expand-lg ana-menu">
+            <div class="container">
+                @* Logo: asp-controller/asp-action → doğru adresi (/) kendisi üretir. Logo SVG ile çizildi, resim dosyası yok. *@
+                <a class="navbar-brand marka" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="marka-isaret" aria-hidden="true">
+                        <svg viewBox="0 0 40 40"><path d="M8 30h24M11 30V19h18v11M15 19v-2a5 5 0 0 1 10 0v2M20 12V9M17 30v-6h6v6" /></svg>
+                    </span>
+                    <span class="marka-yazi">
+                        <strong>BelediyeBaşvuru</strong>
+                        <small>Batman Belediyesi</small>
+                    </span>
+                </a>
+                @* Telefonda görünen menü aç/kapat butonu; Bootstrap JS #anaMenu'yü açıp kapatır. *@
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#anaMenu" aria-controls="anaMenu"
+                        aria-expanded="false" aria-label="Menüyü aç/kapat">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="anaMenu">
+                    @* Menü bağlantıları. "#kategoriler" gibi olanlar ana sayfadaki bölümlere kaydırır. *@
+                    <ul class="navbar-nav mx-lg-auto">
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#kategoriler">Hizmetler</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#nasil-calisir">Nasıl Çalışır?</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#duyurular">Duyurular</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">KVKK</a></li>
+                    </ul>
+                    @* Kişi 2: Başvuru formu yapılınca href="#" yerine asp-controller="Basvuru" asp-action="Olustur" yazılacak. *@
+                    <a class="btn btn-bb-birincil" href="#">Başvuru Oluştur</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @* Sayfa ViewData["TamGenislik"] = true derse (ana sayfa gibi) içerik kenardan kenara yayılır;
+       demezse içerik ortada, kenar boşluklu bir kutuya (container) konur. *@
+    @if (ViewData["TamGenislik"] is true)
+    {
+        <main role="main">
+            @RenderBody()
+        </main>
+    }
+    else
+    {
+        <div class="container py-4">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
+
+    @* Alt bilgi (lacivert). row/col-* → Bootstrap ızgarası: geniş ekranda 3 sütun, telefonda alt alta. *@
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="marka marka-acik mb-3">
+                        <span class="marka-isaret" aria-hidden="true">
+                            <svg viewBox="0 0 40 40"><path d="M8 30h24M11 30V19h18v11M15 19v-2a5 5 0 0 1 10 0v2M20 12V9M17 30v-6h6v6" /></svg>
+                        </span>
+                        <span class="marka-yazi">
+                            <strong>BelediyeBaşvuru</strong>
+                            <small>Batman Belediyesi</small>
+                        </span>
+                    </div>
+                    <p class="mb-0">Talep, şikayet ve önerilerinizi fotoğraf ve konumla iletin; takip numaranızla her adımı izleyin.</p>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <h2 class="footer-baslik">Hızlı Erişim</h2>
+                    <ul class="list-unstyled footer-liste">
+                        <li><a href="#">Başvuru Oluştur</a></li>
+                        <li><a href="#sorgula">Başvuru Sorgula</a></li>
+                        <li><a href="#kategoriler">Hizmet Kategorileri</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Privacy">KVKK / Gizlilik</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-lg-4">
+                    <h2 class="footer-baslik">İletişim</h2>
+                    <ul class="list-unstyled footer-liste">
+                        <li><a href="tel:153">ALO 153 Çözüm Merkezi</a></li>
+                        <li>7 gün 24 saat</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-alt">
+                &copy; 2026 BelediyeBaşvuru · Batman Üniversitesi Yazılım Mühendisliği Lab dönem projesidir; belediyenin resmî sitesi değildir.
+            </div>
+        </div>
+    </footer>
+    @* Betikler en altta: sayfa önce görünsün, sonra JS yüklensin. Sıra önemli (önce jQuery, sonra Bootstrap). *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* Bootstrap JS: telefon menüsünün açılıp kapanması gibi etkileşimler. *@
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* Sayfaya özel JS: sayfa @section Scripts { ... } yazarsa buraya eklenir. *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

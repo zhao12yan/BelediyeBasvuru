@@ -1,0 +1,525 @@
+/* anasayfa.css — SADECE ana sayfa (Views/Home/Index.cshtml) için stiller.
+   Index.cshtml bu dosyayı @section Styles ile yükler. Renk değişkenleri site.css içinde (:root) */
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  color: #fff;
+  /* Üç katman üst üste (ilk yazılan en üstte):
+     1) yarı saydam lacivert→mavi renk geçişi: yazı fotoğraf üzerinde okunsun diye
+     2) Batman panorama fotoğrafı (yerel dosya), ekranı kaplayacak şekilde (cover)
+     3) fotoğraf yüklenemezse düz lacivert */
+  background:
+    linear-gradient(180deg, rgba(26, 36, 51, .72) 0%, rgba(26, 36, 51, .45) 45%, rgba(27, 95, 193, .78) 100%),
+    url("../img/anasayfa/batman-panorama.jpg") center 70% / cover no-repeat,
+    var(--bb-lacivert);
+  /* Alttaki 7.5rem boşluk: hızlı işlem kartları buraya taşıyor. */
+  padding: 4.5rem 0 7.5rem;
+  text-align: center;
+}
+
+.hero-ic {
+  max-width: 900px;
+}
+
+.hero-ust {
+  display: inline-block;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 999px;
+  padding: .25rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.hero-baslik {
+  color: #fff;
+  margin-bottom: 1rem;
+  line-height: 1.05;
+}
+
+.hero-baslik .ince,
+.hero-baslik .kalin {
+  display: block;
+  text-transform: uppercase;
+}
+
+/* Belediye sitesindeki gibi: ilk satır ince, ikinci satır kalın.
+   clamp(en küçük, tercih, en büyük) → ekran genişliğine göre büyüyüp küçülen yazı boyutu. */
+.hero-baslik .ince {
+  font-weight: 300;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  letter-spacing: .08em;
+}
+
+.hero-baslik .kalin {
+  font-weight: 700;
+  font-size: clamp(1.9rem, 5.4vw, 3.3rem);
+}
+
+.hero-alt {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, .88);
+  margin: 0 auto 2rem;
+  max-width: 560px;
+}
+
+/* Beyaz, yuvarlak köşeli arama kutusu: solda giriş alanı, sağda buton (flex ile yan yana). */
+.sorgu-kutu {
+  display: flex;
+  gap: .5rem;
+  background: #fff;
+  border-radius: 16px;
+  padding: .5rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .25);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.sorgu-kutu .form-control {
+  border: 0;
+  font-size: 1.05rem;
+  padding: .85rem 1rem;
+  box-shadow: none;
+  min-width: 0;
+}
+
+.sorgu-buton {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  border-radius: 12px;
+  padding: .7rem 1.4rem;
+  flex-shrink: 0;
+}
+
+.sorgu-buton svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+/* Telefonda (576px altı) butonda sadece büyüteç ikonu kalsın, "Sorgula" yazısı gizlensin. */
+@media (max-width: 575.98px) {
+  .sorgu-buton span {
+    display: none;
+  }
+}
+
+/* ---------- Hızlı işlemler (hero altına taşan kartlar) ---------- */
+.hizli-islemler {
+  margin-top: -4rem;  /* negatif boşluk: kartları yukarı çekip hero'nun üzerine bindirir */
+  position: relative;
+  z-index: 2;         /* hero'nun önünde görünsün */
+}
+
+/* CSS Grid: 4 eşit sütun. Aşağıdaki @media kuralları dar ekranda 2'ye, sonra 1'e düşürür. */
+.hizli-izgara {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.hizli-kart {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  background: #fff;
+  border-radius: var(--bb-yaricap);
+  padding: 1.15rem 1.2rem;
+  box-shadow: 0 10px 30px rgba(35, 48, 68, .12);
+  color: var(--bb-metin);
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+/* Fare üzerine gelince kart 3px yukarı kalkar ve gölgesi büyür. */
+.hizli-kart:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(35, 48, 68, .18);
+  color: var(--bb-metin);
+}
+
+.hizli-kart strong {
+  display: block;
+  color: var(--bb-baslik);
+  font-size: 1.02rem;
+}
+
+.hizli-kart small {
+  display: block;
+  font-size: .85rem;
+}
+
+.hizli-ikon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bb-mavi-acik);
+  color: var(--bb-mavi);
+  flex-shrink: 0;
+}
+
+/* Tüm SVG ikonlar çizgi (stroke) ile çizilir; renk "currentColor" ile kapsayıcının yazı renginden gelir.
+   Böylece ikonun rengini değiştirmek için sadece kapsayıcının "color" değerini değiştirmek yeter. */
+.hizli-ikon svg,
+.kategori-ikon svg,
+.duyuru-ikon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* "Başvuru Oluştur" kartı: belediye sitesindeki kırmızı megafon düğmesi gibi öne çıkar. */
+.hizli-kart.vurgulu .hizli-ikon {
+  background: var(--bb-kirmizi);
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(219, 69, 69, .15);
+}
+
+@media (max-width: 991.98px) {
+  .hizli-izgara {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479.98px) {
+  .hizli-izgara {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Genel bölüm ---------- */
+.bolum {
+  padding: 4.5rem 0;
+}
+
+.bolum-gri {
+  background: var(--bb-gri);
+}
+
+.bolum-baslik {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 2.5rem;
+}
+
+.bolum-baslik h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin-bottom: .5rem;
+}
+
+/* ::after → başlığın altına HTML yazmadan kısa mavi çizgi ekler. */
+.bolum-baslik h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--bb-mavi);
+  margin: .7rem auto 0;
+}
+
+/* ---------- Kategoriler ---------- */
+.kategori-izgara {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.kategori-kart {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  border: 1px solid var(--bb-cizgi);
+  border-radius: var(--bb-yaricap);
+  padding: 1.4rem;
+  color: var(--bb-metin);
+  text-decoration: none;
+  background: #fff;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.kategori-kart:hover {
+  border-color: var(--bb-mavi);
+  box-shadow: 0 10px 26px rgba(41, 123, 229, .14);
+  transform: translateY(-2px);
+  color: var(--bb-metin);
+}
+
+.kategori-kart strong {
+  color: var(--bb-baslik);
+  font-size: 1.05rem;
+}
+
+.kategori-kart small {
+  font-size: .88rem;
+}
+
+.kategori-ikon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--bb-mavi-acik);
+  color: var(--bb-mavi);
+  margin-bottom: .5rem;
+}
+
+.kategori-kart:hover .kategori-ikon {
+  background: var(--bb-mavi);
+  color: #fff;
+}
+
+@media (max-width: 991.98px) {
+  .kategori-izgara {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- Nasıl çalışır ---------- */
+.adimlar {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  counter-reset: none;
+}
+
+.adimlar li {
+  position: relative;
+  background: #fff;
+  border-radius: var(--bb-yaricap);
+  padding: 1.6rem 1.4rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.adimlar strong {
+  color: var(--bb-baslik);
+  font-size: 1.08rem;
+}
+
+.adimlar small {
+  font-size: .9rem;
+}
+
+.adim-no {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bb-lacivert);
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: .6rem;
+}
+
+/* Son adım ("Sonuçlanır") mavi; diğerleri lacivert. */
+.adimlar li:last-child .adim-no {
+  background: var(--bb-mavi);
+}
+
+@media (max-width: 991.98px) {
+  .adimlar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479.98px) {
+  .adimlar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Duyurular ---------- */
+.duyuru-panel {
+  height: 100%;
+  border: 1px solid var(--bb-cizgi);
+  border-radius: var(--bb-yaricap);
+  padding: 1.6rem;
+}
+
+.duyuru-ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.duyuru-ust h2 {
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 0;
+}
+
+.rozet {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--bb-turuncu);
+  background: rgba(228, 121, 41, .12);
+  border-radius: 999px;
+  padding: .2rem .7rem;
+}
+
+.duyuru-liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.duyuru-liste li {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: .95rem 0;
+  border-bottom: 1px solid var(--bb-gri);
+}
+
+.duyuru-liste li:last-child {
+  border-bottom: 0;
+}
+
+.duyuru-liste strong {
+  display: block;
+  color: var(--bb-baslik);
+}
+
+.duyuru-liste small {
+  display: block;
+  font-size: .85rem;
+}
+
+.duyuru-ikon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(219, 69, 69, .1);
+  color: var(--bb-kirmizi);
+  flex-shrink: 0;
+}
+
+/* ---------- Şehir kartları ---------- */
+.sehir-izgara {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  height: 100%;
+}
+
+.sehir-kart {
+  position: relative;
+  margin: 0;
+  border-radius: var(--bb-yaricap);
+  overflow: hidden;
+  min-height: 300px;
+  background: var(--bb-lacivert);
+}
+
+/* Fotoğraf kartın tamamını kaplar; object-fit: cover → oran bozulmadan kırpılır. */
+.sehir-kart img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fotoğrafın altında yazının okunması için şeffaftan koyuya geçiş. */
+.sehir-kart figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 3rem 1.2rem 1.2rem;
+  background: linear-gradient(180deg, transparent, rgba(26, 36, 51, .9));
+  color: rgba(255, 255, 255, .85);
+}
+
+.sehir-kart figcaption strong {
+  display: block;
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.sehir-kart figcaption span {
+  font-size: .9rem;
+}
+
+@media (max-width: 575.98px) {
+  .sehir-izgara {
+    grid-template-columns: 1fr;
+  }
+
+  .sehir-kart {
+    min-height: 220px;
+  }
+}
+
+/* ---------- Turuncu çağrı bandı ---------- */
+/* Turuncu katman soldan sağa incelir; sağda gün batımı fotoğrafı (minare) hafifçe görünür. */
+.cagri-bant {
+  background:
+    linear-gradient(90deg, rgba(228, 121, 41, .96) 0%, rgba(228, 121, 41, .82) 60%, rgba(228, 121, 41, .55) 100%),
+    url("../img/anasayfa/gun-batimi.jpg") center 40% / cover no-repeat,
+    var(--bb-turuncu);
+  color: #fff;
+  padding: 3.5rem 0;
+}
+
+.cagri-ic {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cagri-bant h2 {
+  color: #fff;
+  font-weight: 300;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  margin-bottom: .35rem;
+}
+
+.cagri-bant p {
+  margin: 0;
+  color: rgba(255, 255, 255, .9);
+}
+
+.cagri-buton {
+  color: var(--bb-turuncu);
+  font-weight: 700;
+  border-radius: 999px;
+  padding: .55rem 1.4rem;
+}
+
+/* ---------- Fotoğraf atfı ---------- */
+.foto-kaynak {
+  font-size: .78rem;
+  color: #8a8a8a;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin: 0;
+}
+
+.foto-kaynak code {
+  color: inherit;
+}

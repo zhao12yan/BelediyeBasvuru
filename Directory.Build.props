@@ -1,0 +1,17 @@
+<!--
+  Directory.Build.props
+  Bu dosya, bu klasör ve altındaki TÜM .csproj projelerine otomatik uygulanır.
+  Ortak ayarları burada bir kez yazarız; her projede tekrar etmeyiz.
+-->
+<Project>
+  <PropertyGroup>
+    <!-- Hedef platform: .NET 10. Tüm projeler aynı sürümle derlenir. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <!-- Null olabilecek değişkenler için derleyici uyarı verir (string? gibi). Hataları erken yakalar. -->
+    <Nullable>enable</Nullable>
+    <!-- System, System.Linq, System.Collections.Generic gibi sık kullanılan using'leri otomatik ekler. -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- C# dilinin en güncel özelliklerini kullanmamıza izin verir. -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+</Project>

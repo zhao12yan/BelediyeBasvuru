@@ -1,0 +1,14 @@
+<!--
+  BelediyeBasvuru.Core — en içteki katman.
+  İçinde: varlıklar (Entities), enum'lar (Enums), servis arayüzleri (Interfaces).
+  KURAL: Bu proje başka hiçbir projeye referans vermez (veritabanı, web vb. bilmez).
+  Hedef platform ve diğer ortak ayarlar Directory.Build.props'tan gelir.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <!-- IdentityUser sınıfı için gerekli (Kullanici bu sınıftan türer). EF Core içermez, sadece modeli verir. -->
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.13" />
+  </ItemGroup>
+
+</Project>
