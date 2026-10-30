@@ -19,13 +19,12 @@ birim personelinin başvuruları işlediği ve yöneticinin istatistik paneli ku
 | Rol | Kişi | Sorumluluk |
 |---|---|---|
 | Kişi 1 | Buğra Doğan | Takım lideri, altyapı, Identity, CI, kurulum-bakım |
-| Kişi 2 | _belirlenecek_ | Ön yüz: vatandaş arayüzü, başvuru formu, harita, kurumsal sayfalar |
-| Kişi 3 | _belirlenecek_ | Arka yüz: başvuru servisi, durum makinesi, atama, bildirim |
-| Kişi 4 | _belirlenecek_ | Veritabanı, dosya yükleme, birim personel ekranı |
-| Kişi 5 | _belirlenecek_ | Yönetim paneli, istatistik, test-güvenlik, rapor editörü |
+| Kişi 2 | Süleyman Aydoğdu | Ön yüz: vatandaş arayüzü, başvuru formu, harita, kurumsal sayfalar |
+| Kişi 3 | Muhammed Ahmed Cihan | Arka yüz: başvuru servisi, durum makinesi, atama, bildirim |
+| Kişi 4 | Yusuf Demir | Veritabanı, dosya yükleme, birim personel ekranı |
+| Kişi 5 | Serhat Nas | Yönetim paneli, istatistik, test-güvenlik, rapor editörü |
 
-Ekip üyeleri: Serhat Nas, Muhammed Ahmed Cihan, Yusuf Demir, Süleyman Aydoğdu, Buğra Doğan.
-Roller ilk toplantıda (O-01) eşleştirilip bu tabloya yazılacak.
+Roller 28 Ekim 2026'da eşleştirildi (O-01). Dal adlarında kendi numaranızı kullanın: `kisi2/...`, `kisi3/...` vb.
 
 ## Teknolojiler
 
