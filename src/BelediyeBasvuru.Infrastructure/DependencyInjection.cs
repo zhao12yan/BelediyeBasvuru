@@ -1,5 +1,9 @@
+// IIstatistikServisi sözleşmesi için (Core, bu projeye bağımlı değil; biz Core'a bağımlıyız).
+using BelediyeBasvuru.Core.Interfaces;
 // AppDbContext sınıfını kullanmak için.
 using BelediyeBasvuru.Infrastructure.Data;
+// SahteIstatistikServisi implementasyonu için.
+using BelediyeBasvuru.Infrastructure.Services;
 // UseSqlServer(...) metodu için.
 using Microsoft.EntityFrameworkCore;
 // IConfiguration: appsettings.json ve ortam değişkenlerindeki ayarları okur.
@@ -35,6 +39,9 @@ public static class DependencyInjection
         // services.AddScoped<IBildirimServisi, SahteBildirimServisi>();
         // services.AddScoped<IDosyaDepolamaServisi, SahteDosyaServisi>();
         // Gerçek servis hazır olunca sadece sağdaki sınıf adı değiştirilir.
+
+        // K5-02: Yönetim paneli istatistikleri — şema (O-07) gelene kadar sahte servis.
+        services.AddScoped<IIstatistikServisi, SahteIstatistikServisi>();
 
         // Zincirleme çağrı yapılabilsin diye aynı listeyi geri döndür.
         return services;
