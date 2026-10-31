@@ -68,7 +68,11 @@
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">KVKK</a></li>
                     </ul>
                     @* Kişi 2: Başvuru formu yapılınca href="#" yerine asp-controller="Basvuru" asp-action="Olustur" yazılacak. *@
-                    <a class="btn btn-bb-birincil" href="#">Başvuru Oluştur</a>
+                    <a class="btn btn-bb-birincil"
+   asp-controller="Basvuru"
+   asp-action="Olustur">
+    Başvuru Oluştur
+</a>
                 </div>
             </div>
         </nav>

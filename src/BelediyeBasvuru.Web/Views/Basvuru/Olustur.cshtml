@@ -1,0 +1,167 @@
+
+@model BelediyeBasvuru.Web.Models.BasvuruModel
+
+@{
+    ViewData["Title"] = "Başvuru Oluştur";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Belediye Başvuru Formu</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    @if (TempData["Basarili"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Basarili"]
+                        </div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger"></div>
+
+                    <form asp-controller="Basvuru"
+                          asp-action="Olustur"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="AdSoyad" class="form-label">
+                                Ad Soyad
+                            </label>
+                            <input asp-for="AdSoyad"
+                                   class="form-control"
+                                   placeholder="Adınızı ve soyadınızı giriniz" />
+                            <span asp-validation-for="AdSoyad"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Telefon" class="form-label">
+                                Telefon
+                            </label>
+                            <input asp-for="Telefon"
+                                   class="form-control"
+                                   placeholder="05XXXXXXXXX" />
+                            <span asp-validation-for="Telefon"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">
+                                E-posta
+                            </label>
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="ornek@mail.com" />
+                            <span asp-validation-for="Email"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Kategori" class="form-label">
+                                Başvuru Kategorisi
+                            </label>
+
+                            <select asp-for="Kategori" class="form-select">
+                                <option value="">Kategori seçiniz</option>
+                                <option value="Yol ve Kaldırım">
+                                    Yol ve Kaldırım
+                                </option>
+                                <option value="Çöp ve Temizlik">
+                                    Çöp ve Temizlik
+                                </option>
+                                <option value="Su ve Kanalizasyon">
+                                    Su ve Kanalizasyon
+                                </option>
+                                <option value="Park ve Bahçeler">
+                                    Park ve Bahçeler
+                                </option>
+                                <option value="Aydınlatma">
+                                    Aydınlatma
+                                </option>
+                                <option value="Diğer">
+                                    Diğer
+                                </option>
+                            </select>
+
+                            <span asp-validation-for="Kategori"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Baslik" class="form-label">
+                                Başvuru Başlığı
+                            </label>
+                            <input asp-for="Baslik"
+                                   class="form-control"
+                                   placeholder="Başvurunuzun konusunu yazınız" />
+                            <span asp-validation-for="Baslik"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Aciklama" class="form-label">
+                                Açıklama
+                            </label>
+                            <textarea asp-for="Aciklama"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Sorunu veya talebinizi detaylı açıklayınız"></textarea>
+                            <span asp-validation-for="Aciklama"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Konum" class="form-label">
+                                Adres / Konum
+                            </label>
+                            <input asp-for="Konum"
+                                   class="form-control"
+                                   placeholder="Mahalle, sokak veya açık adres" />
+                            <span asp-validation-for="Konum"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Fotograf" class="form-label">
+                                Fotoğraf Ekle (İsteğe bağlı)
+                            </label>
+                            <input asp-for="Fotograf"
+                                   type="file"
+                                   class="form-control"
+                                   accept=".jpg,.jpeg,.png,.webp" />
+                            <span asp-validation-for="Fotograf"
+                                  class="text-danger"></span>
+                            <small class="text-muted">
+                                JPG, JPEG, PNG veya WEBP formatında, en fazla 5 MB.
+                            </small>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg">
+                                Başvuruyu Gönder
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
