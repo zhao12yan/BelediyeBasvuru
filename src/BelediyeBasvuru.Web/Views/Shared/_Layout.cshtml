@@ -34,7 +34,7 @@
                         ALO 153
                     </a>
                     @* K1-08: Identity eklenince giriş / kayıt bağlantıları buraya gelir *@
-                    <a class="ust-baglanti" href="#">Giriş Yap</a>
+                    <a class="ust-baglanti" asp-controller="Portal" asp-action="Giris">Giriş Yap</a>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                         <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">KVKK</a></li>
                     </ul>
                     @* Kişi 2: Başvuru formu yapılınca href="#" yerine asp-controller="Basvuru" asp-action="Olustur" yazılacak. *@
-                    <a class="btn btn-bb-birincil" href="#">Başvuru Oluştur</a>
+                    <a class="btn btn-bb-birincil" asp-controller="Portal" asp-action="Olustur">Başvuru Oluştur</a>
                 </div>
             </div>
         </nav>
@@ -110,8 +110,8 @@
                 <div class="col-6 col-lg-3">
                     <h2 class="footer-baslik">Hızlı Erişim</h2>
                     <ul class="list-unstyled footer-liste">
-                        <li><a href="#">Başvuru Oluştur</a></li>
-                        <li><a href="#sorgula">Başvuru Sorgula</a></li>
+                        <li><a asp-controller="Portal" asp-action="Olustur">Başvuru Oluştur</a></li>
+                        <li><a asp-controller="Portal" asp-action="Sorgula">Başvuru Sorgula</a></li>
                         <li><a href="#kategoriler">Hizmet Kategorileri</a></li>
                         <li><a asp-area="" asp-controller="Home" asp-action="Privacy">KVKK / Gizlilik</a></li>
                     </ul>

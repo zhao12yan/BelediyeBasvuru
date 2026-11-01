@@ -1,0 +1,22 @@
+<div data-giris>
+    <div class="portal-giris-sekmeler" role="tablist" aria-label="Giriş türü">
+        <button class="active" id="vatandasSekme" type="button" role="tab" aria-selected="true" aria-controls="vatandasAlan" data-giris-turu="vatandas"><svg class="ikon"><use href="#i-kisi"/></svg> Vatandaş Girişi</button>
+        <button id="personelSekme" type="button" role="tab" aria-selected="false" aria-controls="personelAlan" tabindex="-1" data-giris-turu="personel"><svg class="ikon"><use href="#i-kisi"/></svg> Belediye Personeli</button>
+    </div>
+    <form asp-controller="Portal" asp-action="GirisKontrol" method="post">
+        <div id="vatandasAlan" role="tabpanel" aria-labelledby="vatandasSekme" data-giris-alan="vatandas">
+            <div class="mb-3"><label for="vatandasKullanici" class="form-label">T.C. Kimlik No veya E-Posta</label><input id="vatandasKullanici" name="Kullanici" class="form-control" autocomplete="username" maxlength="254" required /></div>
+            <div class="mb-4"><label for="vatandasParola" class="form-label">Parola</label><input id="vatandasParola" name="Parola" class="form-control" type="password" autocomplete="current-password" maxlength="256" required /></div>
+            <button class="btn portal-btn w-100" type="submit">Vatandaş Olarak Giriş Yap</button>
+        </div>
+        <div id="personelAlan" role="tabpanel" aria-labelledby="personelSekme" data-giris-alan="personel" hidden>
+            <fieldset disabled>
+                <div class="mb-3"><label for="personelKullanici" class="form-label">Personel Kullanıcı Adı / Sicil No</label><input id="personelKullanici" name="Kullanici" class="form-control" autocomplete="username" maxlength="254" required /></div>
+                <div class="mb-3"><label for="personelParola" class="form-label">Parola</label><input id="personelParola" name="Parola" class="form-control" type="password" autocomplete="current-password" maxlength="256" required /></div>
+                <div class="mb-4"><label for="personelBirim" class="form-label">Birim</label><select id="personelBirim" name="Birim" class="form-select">@foreach (var kategori in PortalSecenekleri.Kategoriler) { <option>@kategori.Split(" (")[0]</option> }</select></div>
+                <button class="btn btn-warning w-100 fw-bold" type="submit">Birim Personeli Girişi Yap</button>
+            </fieldset>
+        </div>
+    </form>
+    <p class="portal-giris-notu">Kimlik doğrulama bağlantısı bekleniyor. Gerçek hesap bilgilerinizi kullanmayınız.</p>
+</div>

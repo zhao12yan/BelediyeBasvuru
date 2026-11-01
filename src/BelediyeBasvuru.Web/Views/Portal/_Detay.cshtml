@@ -1,0 +1,30 @@
+@using BelediyeBasvuru.Core.Enums
+@model PortalBasvuruKaydi
+@{
+    Layout = null;
+    var durumlar = Enum.GetValues<BasvuruDurumu>().Where(d => BasvuruGecisKurallari.GecisGecerliMi(Model.Durum, d)).ToList();
+}
+<div class="modal-header portal-detay-baslik"><h2 class="modal-title fs-5"><svg class="ikon text-warning"><use href="#i-liste"/></svg> Başvuru İşlem Paneli & Detayı</h2><button class="btn-close btn-close-white" type="button" data-bs-dismiss="modal" aria-label="Kapat"></button></div>
+<div class="modal-body portal-detay-govde">
+    <div class="d-flex justify-content-between mb-4"><div><span class="portal-detay-etiket">Takip Numarası</span><strong class="font-monospace text-primary fs-5">@Model.TakipNo</strong></div><div class="text-end"><span class="portal-detay-etiket">Mevcut Durum</span><span class="badge text-bg-@PortalSecenekleri.DurumRengi(Model.Durum) fs-6">@PortalSecenekleri.DurumAdi(Model.Durum)</span></div></div>
+    <div class="row g-3 mb-3"><div class="col-md-6"><span class="portal-detay-etiket">Başvuran Vatandaş</span><strong>@Model.AdSoyad (Görünür Personel Yetkisi)</strong></div><div class="col-md-6"><span class="portal-detay-etiket">Kategori & Mahalle</span><strong>@Model.Birim - @Model.Mahalle.Replace("Batman Merkez - ", "")</strong></div></div>
+    <span class="portal-detay-etiket">Şikayet Başlığı</span><strong>@Model.Baslik</strong>
+    <label class="portal-detay-etiket mt-4" for="vatandasBeyani">Açıklama / Vatandaş Beyanı</label><textarea class="form-control" id="vatandasBeyani" rows="2" readonly>@Model.Aciklama</textarea><hr class="my-4" />
+    @if (durumlar.Count > 0)
+    {
+        <form asp-controller="Portal" asp-action="Guncelle" method="post" class="portal-durum-formu" data-durum-formu>
+            <input type="hidden" name="TakipNo" value="@Model.TakipNo" />
+            <h3><svg class="ikon"><use href="#i-kalem"/></svg> Durum Güncelleme & Not Ekleme</h3>
+            <div class="row g-3 mb-3"><div class="col-md-6"><label for="yeniDurum" class="form-label">Yeni Başvuru Durumu <span class="text-danger">*</span></label><select class="form-select" id="yeniDurum" name="Durum" required>@foreach (var durum in durumlar) { <option value="@((int)durum)">@PortalSecenekleri.DurumAdi(durum)</option> }</select></div><div class="col-md-6"><label for="islemPersoneli" class="form-label">İşlem Yapan Personel</label><input class="form-control" id="islemPersoneli" value="Mehmet Demir (Saha Sorumlusu)" readonly /></div></div>
+            <label for="islemNotu" class="form-label">Resmî İşlem Notu / Saha Açıklaması <span class="text-danger">*</span></label><textarea class="form-control" id="islemNotu" name="Not" rows="3" minlength="5" maxlength="1000" placeholder="Örn: 2 adet kepçe ve 4 kişilik saha ekibi adrese sevk edildi. Arıza gideriliyor..." required></textarea>
+            <p class="text-danger" data-durum-hatasi role="alert"></p>
+            <div class="text-end mt-3"><button class="btn btn-secondary btn-sm" type="button" data-bs-dismiss="modal">İptal</button> <button class="btn btn-warning btn-sm fw-bold" type="submit"><svg class="ikon"><use href="#i-kaydet"/></svg> Durumu Güncelle ve Kaydet</button></div>
+        </form>
+    }
+    else { <div class="alert alert-secondary">Bu başvuru sonuçlandırılmıştır; durum değiştirilemez.</div> }
+    <h3 class="portal-gecmis-baslik">İşlem Geçmişi ve Notlar</h3>
+    @foreach (var not in Model.Notlar.AsEnumerable().Reverse())
+    {
+        <article class="portal-islem-notu"><div class="d-flex justify-content-between gap-2"><strong><svg class="ikon text-primary"><use href="#i-kisi"/></svg> @not.Personel</strong><time datetime="@not.Tarih.ToString("O")">@not.Tarih.ToOffset(TimeSpan.FromHours(3)).ToString("dd.MM.yyyy HH:mm")</time></div><p>@not.Aciklama</p></article>
+    }
+</div>

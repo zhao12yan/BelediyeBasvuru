@@ -1,0 +1,23 @@
+@model List<PortalBasvuruKaydi>
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Birim Personel İşlem Paneli";
+    ViewData["Personel"] = true;
+    var acikSayisi = Model.Count(k => k.Durum is BelediyeBasvuru.Core.Enums.BasvuruDurumu.Yeni or BelediyeBasvuru.Core.Enums.BasvuruDurumu.Atandi or BelediyeBasvuru.Core.Enums.BasvuruDurumu.Islemde);
+}
+<section class="card portal-kart portal-personel-kart">
+    <div class="portal-kart-baslik portal-personel-baslik"><div><h2><svg class="ikon"><use href="#i-kisi"/></svg> Birim Personel İşlem Paneli</h2><p>Atanan başvuruları inceleyin, saha ekiplerini yönlendirin, durum güncelleyin ve resmî not ekleyin.</p></div><span class="badge text-bg-warning">Fen İşleri Müd. Personeli</span></div>
+    <div class="portal-kart-govde">
+        <div class="portal-personel-bilgi"><span><strong>Biriminiz:</strong> Fen İşleri Müdürlüğü | <strong>Açık İş Sayısı:</strong> <span class="badge text-bg-danger">@acikSayisi Açık Başvuru</span></span><div><span class="badge text-bg-success">Önizleme Verisi</span> <a class="btn btn-sm btn-outline-secondary" asp-action="Personel"><svg class="ikon"><use href="#i-yenile"/></svg> Yenile</a></div></div>
+        <div class="table-responsive">
+            <table class="table portal-tablo align-middle"><caption class="visually-hidden">Birime atanan başvurular</caption><thead><tr><th scope="col">Takip No</th><th scope="col">Kategori / Başlık</th><th scope="col">Mahalle</th><th scope="col">Tarih</th><th scope="col">Durum</th><th scope="col">Son İşlem Notu</th><th scope="col">İşlem</th></tr></thead><tbody>
+                @foreach (var basvuru in Model)
+                {
+                    <tr><td class="font-monospace fw-bold">@basvuru.TakipNo</td><td><strong>@basvuru.Baslik</strong><small>@basvuru.Birim</small></td><td>@basvuru.Mahalle.Replace("Batman Merkez - ", "")</td><td>@basvuru.Tarih.ToOffset(TimeSpan.FromHours(3)).ToString("dd.MM.yyyy")<small>@basvuru.Tarih.ToOffset(TimeSpan.FromHours(3)).ToString("HH:mm")</small></td><td><span class="badge text-bg-@PortalSecenekleri.DurumRengi(basvuru.Durum)">@PortalSecenekleri.DurumAdi(basvuru.Durum)</span></td><td class="portal-son-not" title="@basvuru.Notlar.LastOrDefault()?.Aciklama">@basvuru.Notlar.LastOrDefault()?.Aciklama</td><td><a class="btn btn-warning btn-sm" asp-action="Detay" asp-route-takipNo="@basvuru.TakipNo" data-detay><svg class="ikon"><use href="#i-kalem"/></svg> İncele & İşlem Yap</a></td></tr>
+                }
+            </tbody></table>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="detayModal" tabindex="-1" aria-label="Başvuru İşlem Paneli ve Detayı" aria-hidden="true"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content" id="detayIcerik"></div></div></div>
+<p class="text-danger portal-bildirim mt-2" id="detayHatasi" role="alert"></p>

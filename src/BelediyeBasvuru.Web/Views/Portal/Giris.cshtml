@@ -1,0 +1,13 @@
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Sisteme Giriş Yap";
+}
+<section class="card portal-giris-sayfa">
+    <div class="card-header portal-giris-baslik"><h2 class="fs-5 mb-0">Sisteme Giriş Yap</h2></div>
+    <div class="card-body">
+        @if (ViewData["GirisHatasi"] is string hata) { <p class="alert alert-warning" role="alert">@hata</p> }
+        @* Form, yerleşimdeki aynı giriş penceresini açar; alan kimlikleri sayfada tektir. *@
+        <p>Vatandaş veya belediye personeli girişi için devam edin.</p>
+        <button class="btn portal-btn" type="button" data-bs-toggle="modal" data-bs-target="#girisModal">Giriş Yap</button>
+    </div>
+</section>
