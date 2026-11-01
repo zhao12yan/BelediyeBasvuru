@@ -1,0 +1,104 @@
+@inject IWebHostEnvironment Ortam
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var personel = ViewData["Personel"] is true;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Batman Belediyesi</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/portal.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="portal">
+    <svg xmlns="http://www.w3.org/2000/svg" class="portal-simgeler" aria-hidden="true">
+        <symbol id="i-kalem" viewBox="0 0 24 24"><path d="M13 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 3l5 5M10 14l1-5 8-8 5 5-8 8z" /></symbol>
+        <symbol id="i-ara" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="m15 15 7 7"/></symbol>
+        <symbol id="i-duyuru" viewBox="0 0 24 24"><path d="M3 9h5l12-5v16L8 15H3zM6 15l2 7h4l-2-6"/></symbol>
+        <symbol id="i-bina" viewBox="0 0 24 24"><path d="M3 22V6h11v16M14 12h7v10M6 9h5M6 13h5M6 17h5M17 15h2M17 18h2M1 22h22M7 6V2h3v4"/></symbol>
+        <symbol id="i-giris" viewBox="0 0 24 24"><path d="M14 3h7v18h-7M2 12h14m-5-5 5 5-5 5"/></symbol>
+        <symbol id="i-kisi" viewBox="0 0 24 24"><circle cx="12" cy="6" r="4"/><path d="M3 22v-4a9 9 0 0 1 18 0v4z"/></symbol>
+        <symbol id="i-telefon" viewBox="0 0 24 24"><path d="M4 2H2v5c0 9 6 15 15 15h5v-6l-6-2-3 3-6-6 3-3-2-6z"/></symbol>
+        <symbol id="i-posta" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 5 10 8L22 5"/></symbol>
+        <symbol id="i-ok" viewBox="0 0 24 24"><path d="M2 12h19m-7-7 7 7-7 7"/></symbol>
+        <symbol id="i-bilgi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 10v7m0-11v1"/></symbol>
+        <symbol id="i-konum" viewBox="0 0 24 24"><path d="M20 9c0 6-8 13-8 13S4 15 4 9a8 8 0 1 1 16 0z"/><circle cx="12" cy="9" r="3"/></symbol>
+        <symbol id="i-saat" viewBox="0 0 24 24"><path d="M4 8H1V2M2 7a10 10 0 1 1 0 10M12 6v6l4 3"/></symbol>
+        <symbol id="i-destek" viewBox="0 0 24 24"><path d="M3 15v-3a9 9 0 0 1 18 0v3M3 12h4v8H3zM17 12h4v8h-4zM21 20c0 3-6 3-9 3"/></symbol>
+        <symbol id="i-yukle" viewBox="0 0 24 24"><path d="M5 19a5 5 0 0 1-1-10 8 8 0 0 1 15-2 6 6 0 0 1 0 12M12 22V10m-4 4 4-4 4 4"/></symbol>
+        <symbol id="i-uyari" viewBox="0 0 24 24"><path d="m12 2 11 20H1zM12 8v7m0 3v1"/></symbol>
+        <symbol id="i-liste" viewBox="0 0 24 24"><path d="m1 4 2 2 4-4M10 4h13M1 12l2 2 4-4m3 2h13M1 20l2 2 4-4m3 2h13"/></symbol>
+        <symbol id="i-yenile" viewBox="0 0 24 24"><path d="M21 3v6h-6M3 21v-6h6M21 9a9 9 0 0 0-16-5M3 15a9 9 0 0 0 16 5"/></symbol>
+        <symbol id="i-kaydet" viewBox="0 0 24 24"><path d="M3 2h15l4 4v16H2V2zm4 0v7h10V2M6 22V13h12v9"/></symbol>
+    </svg>
+    <a href="#icerik" class="visually-hidden-focusable portal-atla">İçeriğe geç</a>
+    <header>
+        <div class="portal-ust-serit">
+            <div class="portal-kapsayici d-flex justify-content-between gap-3">
+                <span>Batman Belediyesi Halkla İlişkiler Müd. • Alo 153 Beyaz Masa</span>
+                <span class="d-flex gap-3"><a href="tel:153"><svg class="ikon"><use href="#i-telefon"/></svg> Alo 153</a><a href="mailto:iletisim@batman.bel.tr"><svg class="ikon"><use href="#i-posta"/></svg> iletisim@batman.bel.tr</a></span>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-dark portal-menu" aria-label="Ana menü">
+            <div class="portal-kapsayici">
+                <a class="portal-marka" asp-controller="Home" asp-action="Index">
+                    <svg class="portal-logo" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="19" fill="white"/><path d="M8 20 21 7l13 13v16H8z" fill="#07375a"/><path d="M17 25h8v13h-8" fill="#edb72a"/><circle cx="21" cy="19" r="4" fill="white"/></svg>
+                    <span><strong>BATMAN BELEDİYESİ</strong><small>Vatandaş Başvuru Portalı</small></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#portalMenu" aria-controls="portalMenu" aria-expanded="false" aria-label="Menüyü aç/kapat"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="portalMenu">
+                    <div class="navbar-nav ms-auto align-items-lg-center">
+                        <a class="nav-link @(action == "Olustur" ? "active" : "")" asp-controller="Portal" asp-action="Olustur"><svg class="ikon"><use href="#i-kalem"/></svg> Başvuru Yap</a>
+                        <a class="nav-link @(action == "Sorgula" ? "active" : "")" asp-controller="Portal" asp-action="Sorgula"><svg class="ikon"><use href="#i-ara"/></svg> Başvuru Sorgula</a>
+                        <a class="nav-link" href="@Url.Action("Index", "Home")#duyurular"><svg class="ikon"><use href="#i-duyuru"/></svg> Duyurular</a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Privacy"><svg class="ikon"><use href="#i-bina"/></svg> Kurumsal</a>
+                        @if (personel)
+                        {
+                            <span class="badge text-bg-warning ms-lg-2"><svg class="ikon"><use href="#i-kisi"/></svg> Mehmet Demir (Fen İşleri)</span>
+                            <a class="btn btn-sm btn-outline-light ms-lg-2" asp-action="Olustur"><svg class="ikon"><use href="#i-giris"/></svg> Çıkış</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-outline-light ms-lg-3" asp-controller="Portal" asp-action="Giris" data-bs-toggle="modal" data-bs-target="#girisModal"><svg class="ikon"><use href="#i-giris"/></svg> Giriş Yap</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="portal-hero">
+        <h1>Batman İçin Birlikte Çözüyoruz</h1>
+        <p>Talep, şikayet ve önerilerinizi anında iletin, sürecinizi şeffaf bir şekilde takip edin.</p>
+    </section>
+    <main id="icerik" class="portal-icerik">
+        @if (TempData["PortalMesaj"] is string mesaj)
+        {
+            <div class="alert alert-info portal-bildirim" role="status">@mesaj</div>
+        }
+        @RenderBody()
+    </main>
+    <footer class="portal-altbilgi">
+        <span>Batman Üniversitesi · Yazılım Mühendisliği ders projesi. Belediyenin resmî sitesi değildir.</span>
+        <details><summary>Önizleme bilgisi</summary>
+            <p>#20 / Süleyman Aydoğdu tasarımı. Kimlik doğrulama ve kalıcı başvuru servisi henüz bağlı değildir.</p>
+            @if (Ortam.IsDevelopment())
+            {
+                <p>Geliştirme önizlemesi: başvurular bu tarayıcının sunucu oturumunda 30 dakika tutulur; belediyeye gönderilmez. Fotoğraflar yalnız formda önizlenir. Sunucu yeniden başlatılınca kayıtlar silinir.</p>
+                <a asp-controller="Portal" asp-action="Personel">Personel ekranı önizlemesi</a><span> · Örnek takip numarası: BLD-2026-000123-7</span>
+            }
+        </details>
+    </footer>
+    <div class="modal fade" id="girisModal" tabindex="-1" aria-labelledby="girisBaslik" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered portal-giris-dialog"><div class="modal-content">
+            <div class="modal-header portal-giris-baslik"><h2 class="modal-title fs-5" id="girisBaslik"><svg class="ikon"><use href="#i-giris"/></svg> Sisteme Giriş Yap</h2><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button></div>
+            <div class="modal-body"><partial name="~/Views/Portal/_GirisFormu.cshtml" /></div>
+        </div></div>
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

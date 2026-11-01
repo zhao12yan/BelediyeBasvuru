@@ -1,0 +1,77 @@
+@model PortalBasvuruFormu
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Yeni Şikayet / Talep Oluştur";
+    var adimlar = new[] { "Kategori & Detay", "Konum & Harita", "Fotoğraf Yükleme", "Özet & Onay" };
+    var baslangicAdim = ViewData.ModelState.ContainsKey(nameof(Model.Onay)) && ViewData.ModelState[nameof(Model.Onay)]!.Errors.Count > 0 ? 3 : 0;
+}
+<section class="card portal-kart">
+    <div class="portal-kart-baslik">
+        <div><h2>Yeni Şikayet / Talep Oluştur</h2><p>Lütfen aşağıdaki 4 adımlı formu eksiksiz doldurunuz.</p></div>
+        <span class="portal-modul">Kişi 2 Ön Yüz Modülü</span>
+    </div>
+    <div class="portal-kart-govde">
+        <ol class="portal-adimlar" aria-label="Başvuru adımları">
+            @for (var i = 0; i < adimlar.Length; i++)
+            {
+                <li data-adim-gosterge="@i" class="@(i == 0 ? "active" : "")"><span>@(i + 1)</span><small>@adimlar[i]</small></li>
+            }
+        </ol>
+        <form asp-controller="Portal" asp-action="Olustur" method="post" enctype="multipart/form-data" id="basvuruFormu" data-baslangic-adim="@baslangicAdim" novalidate>
+            <div asp-validation-summary="All" class="text-danger portal-dogrulama" role="alert"></div>
+            <fieldset data-adim="0">
+                <legend class="visually-hidden">Kategori & Detay</legend>
+                <div class="alert alert-info portal-uyari"><svg class="ikon"><use href="#i-bilgi"/></svg><span>Şikayetinizin doğru birime zamanında yönlendirilebilmesi için ilgili kategoriyi doğru seçtiğinizden emin olunuz.</span></div>
+                <div class="mb-4"><label asp-for="Kategori" class="form-label">Başvuru Kategorisi <span class="text-danger">*</span></label><select asp-for="Kategori" class="form-select" required><option value="">Lütfen bir kategori seçiniz...</option>@foreach (var kategori in PortalSecenekleri.Kategoriler) { <option value="@kategori">@kategori</option> }</select></div>
+                <div class="mb-4"><label asp-for="Baslik" class="form-label">Başvuru Başlığı <span class="text-danger">*</span></label><input asp-for="Baslik" class="form-control" placeholder="Örn: Gültepe Mah. 4022 Sokak Su Patlağı Arızası" minlength="5" maxlength="120" required /><div class="portal-alan-ipucu"><span>En az 5, en fazla 120 karakter girebilirsiniz.</span><output id="baslikSayaci" for="Baslik">0/120</output></div></div>
+                <div class="mb-4"><label asp-for="Aciklama" class="form-label">Detaylı Açıklama <span class="text-danger">*</span></label><textarea asp-for="Aciklama" class="form-control" rows="4" placeholder="Lütfen talep veya şikayetinizi ayrıntılı olarak açıklayınız..." minlength="20" maxlength="3000" required></textarea><div class="portal-alan-ipucu"><span>En az 20 karakter ile açıklayınız.</span><output id="aciklamaSayaci" for="Aciklama">0/3000</output></div></div>
+                <div class="portal-form-alt js-only"><span></span><button class="btn portal-btn" type="button" data-ileri>Konum Adımına İlerle <svg class="ikon"><use href="#i-ok"/></svg></button></div>
+            </fieldset>
+            <fieldset data-adim="1">
+                <legend class="visually-hidden">Konum & Harita</legend>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6"><label asp-for="Mahalle" class="form-label">Mahalle / Bölge Seçiniz <span class="text-danger">*</span></label><select asp-for="Mahalle" class="form-select" required><option value="">Mahalle Seçiniz...</option>@foreach (var mahalle in PortalSecenekleri.Mahalleler) { <option value="@mahalle">@mahalle</option> }</select></div>
+                    <div class="col-md-6"><label asp-for="Adres" class="form-label">Açık Adres / Cadde ve Sokak Tarifi</label><input asp-for="Adres" class="form-control" maxlength="300" placeholder="Örn: Atatürk Bulvarı, Kültür Camii Karşısı No: 12" /></div>
+                </div>
+                <div class="portal-hizmet">
+                    <h3>Otomatik Atama & Hizmet Bilgisi</h3>
+                    <p>Başvurunuz seçtiğiniz kategoriye göre ilgili müdürlüğe yönlendirilecek, Alo 153 ekiplerimiz otomatik görevlendirilecektir.</p>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4"><div class="portal-hizmet-kart"><svg class="ikon text-primary"><use href="#i-bina"/></svg><span>İlgili Müdürlük</span><strong id="atananBirim">Fen İşleri Müdürlüğü</strong></div></div>
+                        <div class="col-md-4"><div class="portal-hizmet-kart"><svg class="ikon text-success"><use href="#i-saat"/></svg><span>Ortalama Müdahale Süresi</span><strong>24 - 48 Saat</strong></div></div>
+                        <div class="col-md-4"><div class="portal-hizmet-kart"><svg class="ikon text-primary"><use href="#i-destek"/></svg><span>İletişim & Çağrı Merkezi</span><strong>Alo 153 / Beyaz Masa</strong></div></div>
+                    </div>
+                </div>
+                <div class="portal-form-alt js-only"><button class="btn btn-outline-secondary" type="button" data-geri>← Geri (Detay)</button><button class="btn portal-btn" type="button" data-ileri>Fotoğraf Adımına İlerle <svg class="ikon"><use href="#i-ok"/></svg></button></div>
+            </fieldset>
+            <fieldset data-adim="2">
+                <legend class="visually-hidden">Fotoğraf Yükleme</legend>
+                <div class="alert alert-warning portal-uyari"><svg class="ikon"><use href="#i-uyari"/></svg><span>Olay veya arıza yerini belirten <strong>en fazla 3 adet fotoğraf</strong> yükleyebilirsiniz. Görseller ekiplerin müdahalesini hızlandırır.</span></div>
+                <div class="portal-dosya-alani" id="dosyaBirakmaAlani">
+                    <svg class="ikon"><use href="#i-yukle"/></svg>
+                    <strong>Fotoğrafları Sürükleyip Bırakın veya Tıklayın</strong>
+                    <span>Desteklenen Formatlar: JPG, PNG, WebP (Maksimum 5MB / dosya)</span>
+                    <label for="Fotograflar" class="btn btn-sm btn-outline-info">Dosya Seç</label><input asp-for="Fotograflar" type="file" class="portal-dosya-input" accept="image/jpeg,image/png,image/webp" multiple aria-describedby="fotografHatasi" />
+                </div>
+                <p class="text-danger mt-2" id="fotografHatasi" role="alert"></p>
+                <h3 class="portal-fotograf-baslik">Yüklenen Fotoğraflar (<span id="fotografSayisi">0</span>/3)</h3>
+                <div id="fotografListesi" class="portal-fotograflar"><p class="portal-bos-fotograf">Henüz fotoğraf eklenmedi. (Opsiyonel)</p></div>
+                <div class="portal-form-alt js-only"><button class="btn btn-outline-secondary" type="button" data-geri>← Geri (Konum)</button><button class="btn portal-btn" type="button" data-ileri>Özet ve Onay Adımı <svg class="ikon"><use href="#i-ok"/></svg></button></div>
+            </fieldset>
+            <fieldset data-adim="3">
+                <legend class="visually-hidden">Özet & Onay</legend>
+                <h3 class="portal-ozet-baslik">Başvuru Bilgileri Özeti</h3>
+                <div class="portal-ozet row g-3">
+                    <div class="col-md-6"><span>Kategori</span><strong data-ozet="Kategori">—</strong></div>
+                    <div class="col-md-6"><span>Mahalle / Adres</span><strong data-ozet="Adres">—</strong></div>
+                    <div class="col-12"><span>Başvuru Başlığı</span><strong data-ozet="Baslik">—</strong></div>
+                    <div class="col-12"><span>Detaylı Açıklama</span><p class="portal-ozet-aciklama" data-ozet="Aciklama">—</p></div>
+                    <div class="col-md-6"><span>Harita Koordinatları</span><strong class="font-monospace portal-koordinat">Konum seçilmedi</strong></div>
+                    <div class="col-md-6"><span>Eklenecek Fotoğraflar</span><strong><span class="badge text-bg-secondary" id="ozetFotograf">0 Adet Yüklendi</span></strong></div>
+                </div>
+                <div class="form-check portal-onay"><input asp-for="Onay" class="form-check-input" required /><label asp-for="Onay" class="form-check-label">Başvurumun Batman Belediyesi tarafından 6698 sayılı <a asp-controller="Home" asp-action="Privacy" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a> kapsamında işlenmesini ve tarafıma SMS/E-Posta ile bilgilendirme yapılmasını onaylıyorum. <span class="text-danger">*</span></label></div>
+                <div class="portal-form-alt"><button class="btn btn-outline-secondary js-only" type="button" data-geri>← Geri (Fotoğraf)</button><button class="btn portal-btn-turkuaz" type="submit">Başvuruyu Tamamla ve Gönder <svg class="ikon"><use href="#i-ok"/></svg></button></div>
+            </fieldset>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,23 @@
+@model PortalSorguModeli
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Başvuru Takip ve Sorgulama";
+}
+<section class="card portal-kart">
+    <div class="portal-kart-baslik"><div><h2>Başvuru Takip ve Sorgulama</h2><p>Tarafınıza iletilen 16 haneli başvuru takip numaranız ile durum sorgulayın.</p></div></div>
+    <div class="portal-kart-govde">
+        <form asp-controller="Portal" asp-action="Sorgula" method="get" class="portal-sorgu-form" role="search">
+            <label for="takipNo" class="form-label">Takip Numarası</label>
+            <div class="input-group"><span class="input-group-text" aria-hidden="true">▥</span><input class="form-control font-monospace" id="takipNo" name="takipNo" value="@Model.TakipNo" placeholder="BLD-2026-000123-7" maxlength="30" required autocomplete="off" /><button class="btn portal-btn" type="submit">Sorgula</button></div>
+            <p class="form-text">Örnek Format: BLD-2026-000123-7 (Yıl + Sıra No + Luhn Kontrol Kodu)</p>
+        </form>
+        @if (Model.Mesaj is not null) { <div class="alert alert-warning" role="status">@Model.Mesaj</div> }
+        @if (Model.Basvuru is { } basvuru)
+        {
+            <article class="portal-sorgu-sonuc" aria-label="Başvuru sorgu sonucu">
+                <div class="d-flex justify-content-between gap-3 align-items-center flex-wrap"><div><span class="badge text-bg-@PortalSecenekleri.DurumRengi(basvuru.Durum)">@(basvuru.Durum == BelediyeBasvuru.Core.Enums.BasvuruDurumu.Islemde ? "Aktif İşlemde" : PortalSecenekleri.DurumAdi(basvuru.Durum))</span><h3>Takip No: @basvuru.TakipNo</h3><p>Kayıt Tarihi: @basvuru.Tarih.ToOffset(TimeSpan.FromHours(3)).ToString("dd MMMM yyyy - HH:mm", System.Globalization.CultureInfo.GetCultureInfo("tr-TR"))</p></div><span class="portal-modul">Atanan Birim: @basvuru.Birim</span></div>
+                <hr />
+            </article>
+        }
+    </div>
+</section>

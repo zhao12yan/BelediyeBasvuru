@@ -40,7 +40,7 @@
 
         @* K3 (Kişi 3): ITakipSorguServisi hazır olunca form Basvuru/Sorgula'ya bağlanacak *@
         @* method="get" → numara adres çubuğunda görünür (?takipNo=...); sorgulama için uygundur. *@
-        <form class="sorgu-kutu" id="sorgula" action="#" method="get" role="search">
+        <form class="sorgu-kutu" id="sorgula" asp-controller="Portal" asp-action="Sorgula" method="get" role="search">
             @* Ekranda görünmez ama ekran okuyucular için alanın adını söyler (erişilebilirlik). *@
             <label class="visually-hidden" for="takipNo">Takip numarası</label>
             <input class="form-control" id="takipNo" name="takipNo" type="text" inputmode="text" autocomplete="off"
@@ -58,7 +58,7 @@
 <section class="hizli-islemler" aria-label="Hızlı işlemler">
     <div class="container">
         <div class="hizli-izgara">
-            <a class="hizli-kart vurgulu" href="#">
+            <a class="hizli-kart vurgulu" asp-controller="Portal" asp-action="Olustur">
                 <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6M18 6a7 7 0 0 1 0 12" /></svg></span>
                 <span><strong>Başvuru Oluştur</strong><small>Fotoğraf ve konumla bildirin</small></span>
             </a>
@@ -66,7 +66,7 @@
                 <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5" /></svg></span>
                 <span><strong>Başvuru Sorgula</strong><small>Takip numarasıyla durum</small></span>
             </a>
-            <a class="hizli-kart" href="#">
+            <a class="hizli-kart" asp-controller="Portal" asp-action="Olustur">
                 <span class="hizli-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12zM12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" /></svg></span>
                 <span><strong>Haritada Bildir</strong><small>Sorunun yerini işaretleyin</small></span>
             </a>
@@ -89,7 +89,7 @@
             @* Her kategori için bir kart. "@k.Ad" → C# değerini HTML'e (güvenli biçimde) yazar. *@
             @foreach (var k in kategoriler)
             {
-                <a class="kategori-kart" href="#">
+                <a class="kategori-kart" asp-controller="Portal" asp-action="Olustur">
                     <span class="kategori-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="@k.Ikon" /></svg></span>
                     <strong>@k.Ad</strong>
                     <small>@k.Aciklama</small>
@@ -130,7 +130,7 @@
                     <ul class="duyuru-liste">
                         <li>
                             <span class="duyuru-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6" /></svg></span>
-                            <span><strong>Portal deneme sürümünde</strong><small>Başvuru formu yakında açılacak</small></span>
+                            <span><strong>Portal deneme sürümünde</strong><small>Başvuru formu önizlemeye açıldı</small></span>
                         </li>
                         <li>
                             <span class="duyuru-ikon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM15 9a3 3 0 0 1 0 6" /></svg></span>
@@ -169,7 +169,7 @@
             <p>Birkaç dakikada bildirin; çözüm sürecini adım adım takip edin.</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            <a class="btn btn-light cagri-buton" href="#">Başvuru Oluştur</a>
+            <a class="btn btn-light cagri-buton" asp-controller="Portal" asp-action="Olustur">Başvuru Oluştur</a>
             <a class="btn btn-bb-cizgi" href="#sorgula">Başvuru Sorgula</a>
         </div>
     </div>

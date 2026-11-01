@@ -8,6 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC'yi aç: Controller sınıfları + Razor görünümleri (Views klasörü).
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".BelediyeBasvuru.Onizleme";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
 // Veritabanı ve diğer altyapı servislerini kaydet (bkz. Infrastructure/DependencyInjection.cs).
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -34,6 +43,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 // Gelen adresin hangi controller/action'a gideceğini belirle.
 app.UseRouting();
+app.UseSession();
 
 // Yetki kontrolü ([Authorize] olan sayfalar). Identity eklenince UseAuthentication bunun önüne gelecek.
 app.UseAuthorization();
