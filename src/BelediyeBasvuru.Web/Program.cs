@@ -1,56 +1,80 @@
-// AddInfrastructure(...) uzantı metodunu kullanabilmek için Infrastructure ad alanını içe alıyoruz.
+
+using BelediyeBasvuru.Core.Entities;
 using BelediyeBasvuru.Infrastructure;
+using BelediyeBasvuru.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 
-// ===== 1. AŞAMA: Servisleri kaydet (uygulama başlamadan önce) =====
-
-// Uygulama kurucusunu oluştur. appsettings.json, ortam değişkenleri ve komut satırı ayarlarını otomatik okur.
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC'yi aç: Controller sınıfları + Razor görünümleri (Views klasörü).
+// MVC
 builder.Services.AddControllersWithViews();
-// Veritabanı ve diğer altyapı servislerini kaydet (bkz. Infrastructure/DependencyInjection.cs).
+
+// Veritabanı bağlantısı
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// K1-08 (H3): ASP.NET Core Identity burada yapılandırılacak.
-// K1-09 (H4): Roller ve policy'ler (VatandasPolicy, BirimPersoneliPolicy, YoneticiPolicy, AyniBirim).
-// K1-10 (H4): Global AutoValidateAntiforgeryToken + güvenlik başlıkları.
-// K1-13 (H5): İstek sınırlama (basvuru / giris / sorgu).
+// Identity yapılandırması
+builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
 
-// Kayıtlar bitti; uygulama nesnesini oluştur.
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+
+    options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
+// Giriş ve çıkış yönlendirmeleri
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Giris";
+    options.LogoutPath = "/Account/Cikis";
+    options.AccessDeniedPath = "/Account/Giris";
+    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
-// ===== 2. AŞAMA: İstek hattını (middleware pipeline) kur — SIRA ÖNEMLİDİR =====
+// Rol oluşturma
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider
+        .GetRequiredService<RoleManager<IdentityRole>>();
 
-// Geliştirme ortamında DEĞİLSEK (yani canlıdaysak):
+    string[] roller = { "Vatandas", "Admin", "Personel" };
+
+    foreach (var rol in roller)
+    {
+        if (!await roleManager.RoleExistsAsync(rol))
+        {
+            await roleManager.CreateAsync(new IdentityRole(rol));
+        }
+    }
+}
+
+// HTTP pipeline
 if (!app.Environment.IsDevelopment())
 {
-    // Hata olursa kullanıcıya ayrıntı göstermek yerine /Home/Error sayfasına yönlendir.
     app.UseExceptionHandler("/Home/Error");
-    // HSTS: tarayıcıya "bu siteye hep HTTPS ile gel" bilgisini gönder.
     app.UseHsts();
 }
 
-// HTTP ile gelen istekleri HTTPS'e yönlendir (HTTPS portu tanımlı değilse sadece uyarı yazar).
 app.UseHttpsRedirection();
-// Gelen adresin hangi controller/action'a gideceğini belirle.
+app.UseStaticFiles();
+
 app.UseRouting();
 
-// Yetki kontrolü ([Authorize] olan sayfalar). Identity eklenince UseAuthentication bunun önüne gelecek.
+app.UseAuthentication();
 app.UseAuthorization();
 
-// wwwroot içindeki statik dosyaları (CSS, JS, resim, yazı tipi) sun.
-app.MapStaticAssets();
-
-// Varsayılan adres kalıbı: /{controller}/{action}/{id?}
-// Örn. "/" → HomeController.Index, "/Home/Privacy" → HomeController.Privacy
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Web sunucusunu başlat ve istekleri dinlemeye başla. Bu satır uygulama kapanana kadar bekler.
 app.Run();
-
-// Entegrasyon testlerinde WebApplicationFactory<Program> kullanılabilmesi için.
-// (Program sınıfını test projesinin görebileceği hâle getirir.)
-public partial class Program;

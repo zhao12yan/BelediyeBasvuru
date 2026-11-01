@@ -1,0 +1,38 @@
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="container mt-5" style="max-width:500px;">
+    <h2 class="text-center mb-4">Vatandaş Kaydı</h2>
+
+    <form asp-controller="Account" asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label>Ad Soyad</label>
+            <input type="text" name="adSoyad" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>E-posta</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label>Şifre</label>
+            <input type="password" name="password" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Kayıt Ol
+        </button>
+    </form>
+
+    <p class="text-center mt-3">
+        Hesabın var mı?
+        <a asp-controller="Account" asp-action="Login">Giriş Yap</a>
+    </p>
+</div>

@@ -1,3 +1,5 @@
+
+using BelediyeBasvuru.Infrastructure.Data;
 // IIstatistikServisi sözleşmesi için (Core, bu projeye bağımlı değil; biz Core'a bağımlıyız).
 using BelediyeBasvuru.Core.Interfaces;
 // AppDbContext sınıfını kullanmak için.
@@ -6,39 +8,33 @@ using BelediyeBasvuru.Infrastructure.Data;
 using BelediyeBasvuru.Infrastructure.Services;
 // UseSqlServer(...) metodu için.
 using Microsoft.EntityFrameworkCore;
-// IConfiguration: appsettings.json ve ortam değişkenlerindeki ayarları okur.
 using Microsoft.Extensions.Configuration;
-// IServiceCollection: uygulamanın servis kayıt listesi (Dependency Injection kabı).
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BelediyeBasvuru.Infrastructure;
 
-// "static class" → nesnesi oluşturulmaz; sadece yardımcı metot barındırır.
 public static class DependencyInjection
 {
     /// <summary>
-    /// Altyapı servislerini (veritabanı, dosya, bildirim ...) kaydeder.
-    /// Bağlantı dizesi: "ConnectionStrings:Default"
-    ///  - Geliştirme: appsettings.Development.json (LocalDB) veya user-secrets
-    ///  - Docker: docker-compose.yml içindeki ConnectionStrings__Default ortam değişkeni
-    ///  - CI: ConnectionStrings__Default ortam değişkeni (SQL Server 2022 konteyneri)
+    /// Infrastructure katmanındaki servisleri uygulamaya kaydeder.
+    /// Veritabanı bağlantısını yapılandırır.
     /// </summary>
-    // "this IServiceCollection services" → uzantı metodu: Program.cs'te builder.Services.AddInfrastructure(...) diye çağrılır.
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        // Ayarlardan "Default" adlı bağlantı dizesini oku.
-        // "?? throw ..." → bulunamazsa (null ise) uygulamayı açık bir hata mesajıyla durdur.
+        // appsettings.json içerisinden bağlantı adresini al.
         var connectionString = configuration.GetConnectionString("Default")
-            ?? throw new InvalidOperationException("'ConnectionStrings:Default' bağlantı dizesi bulunamadı.");
+            ?? throw new InvalidOperationException(
+                "'ConnectionStrings:Default' bağlantı dizesi bulunamadı."
+            );
 
-        // AppDbContext'i servis olarak kaydet ve SQL Server kullanacağını söyle.
-        // Artık bir controller'ın kurucusuna "AppDbContext db" yazmak yeterli; nesneyi sistem verir.
-        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+        // Entity Framework Core ile SQL Server bağlantısını kaydet.
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(connectionString)
+        );
 
-        // O-09: Sahte servisler hazır olunca buraya eklenir, ör.:
-        // services.AddScoped<IBildirimServisi, SahteBildirimServisi>();
-        // services.AddScoped<IDosyaDepolamaServisi, SahteDosyaServisi>();
-        // Gerçek servis hazır olunca sadece sağdaki sınıf adı değiştirilir.
+        // İleride servis kayıtları buraya eklenecek.
 
         // K5-02: Yönetim paneli istatistikleri — şema (O-07) gelene kadar sahte servis.
         services.AddScoped<IIstatistikServisi, SahteIstatistikServisi>();
@@ -47,3 +43,4 @@ public static class DependencyInjection
         return services;
     }
 }
+
