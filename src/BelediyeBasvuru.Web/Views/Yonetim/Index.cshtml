@@ -1,0 +1,132 @@
+@* Index.cshtml — YÖNETİM PANELİ. Adres: "/Yonetim" → YonetimController.Index()
+   Model: IstatistikOzeti (Core/Interfaces/IIstatistikServisi.cs).
+   Şu an veri SahteIstatistikServisi'nden (örnek/sabit) geliyor; O-07 şema birleşince
+   gerçek veriye dönecek, bu sayfa HİÇ değişmeyecek (bkz. docs/analiz/gostergeler.md). *@
+@using BelediyeBasvuru.Core.Interfaces
+@model IstatistikOzeti
+@{
+    ViewData["Title"] = "Yönetim Paneli";
+}
+
+<h1 class="mb-4">Yönetim Paneli</h1>
+<p class="text-muted">
+    Göstergelerin tanımı ve formülleri: <code>docs/analiz/gostergeler.md</code>.
+    Aşağıdaki veriler şu an <strong>örnektir</strong> (gerçek başvuru şeması henüz birleşmedi).
+</p>
+
+@* ===== G1 / G2: üstteki sayı kartları ===== *@
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="text-muted small">Toplam Açık Başvuru (G1)</div>
+                <div class="fs-2 fw-bold">@Model.ToplamAcikBasvuru</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="text-muted small">Bugünkü Yeni Başvuru (G2)</div>
+                <div class="fs-2 fw-bold">@Model.BugunkuYeniBasvuru</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="text-muted small">Durum Sayısı</div>
+                <div class="fs-2 fw-bold">@Model.DurumDagilimi.Count</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <div class="text-muted small">Kategori Sayısı</div>
+                <div class="fs-2 fw-bold">@Model.KategoriDagilimi.Count</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ===== G3 / G4 / G5: grafikler. Her <canvas> Chart.js'in çizim yüzeyi. ===== *@
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6">Durum Dağılımı (G3)</h2>
+                <canvas id="durumGrafik" aria-label="Başvuruların durumlara göre dağılımı" role="img"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6">Kategori Dağılımı (G4)</h2>
+                <canvas id="kategoriGrafik" aria-label="Başvuruların kategorilere göre dağılımı" role="img"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h6">Haftalık Başvuru Trendi (G5)</h2>
+                <canvas id="trendGrafik" aria-label="Son 7 günün başvuru sayısı" role="img"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* Chart.js sadece bu sayfada kullanılıyor; her sayfayı ağırlaştırmamak için _Layout'a
+       eklenmedi, CDN'den sadece burada çağrılıyor. *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+        // Sunucudan (Model) gelen veriyi JSON'a çevirip JavaScript tarafına aktarıyoruz.
+        // Html.Raw gerekmiyor çünkü Json.Serialize zaten güvenli (script içine yazılabilir) metin üretir.
+        const durumEtiketleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DurumDagilimi.Select(d => d.Durum)));
+        const durumAdetleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DurumDagilimi.Select(d => d.Adet)));
+
+        const kategoriEtiketleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.KategoriDagilimi.Select(k => k.Kategori)));
+        const kategoriAdetleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.KategoriDagilimi.Select(k => k.Adet)));
+
+        const trendEtiketleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.HaftalikTrend.Select(g => g.Gun.ToString("dd.MM"))));
+        const trendAdetleri = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.HaftalikTrend.Select(g => g.Adet)));
+
+        // G3: Durum dağılımı — halka (doughnut) grafik.
+        new Chart(document.getElementById('durumGrafik'), {
+            type: 'doughnut',
+            data: {
+                labels: durumEtiketleri,
+                datasets: [{ data: durumAdetleri }]
+            }
+        });
+
+        // G4: Kategori dağılımı — bar grafik.
+        new Chart(document.getElementById('kategoriGrafik'), {
+            type: 'bar',
+            data: {
+                labels: kategoriEtiketleri,
+                datasets: [{ label: 'Başvuru', data: kategoriAdetleri }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // G5: Haftalık trend — çizgi grafik.
+        new Chart(document.getElementById('trendGrafik'), {
+            type: 'line',
+            data: {
+                labels: trendEtiketleri,
+                datasets: [{ label: 'Yeni başvuru', data: trendAdetleri, tension: 0.3 }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+}
