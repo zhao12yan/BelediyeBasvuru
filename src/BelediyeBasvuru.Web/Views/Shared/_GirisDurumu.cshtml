@@ -1,0 +1,13 @@
+@* H2-K1: Üst şeritteki giriş/çıkış alanı. Çıkış bir BAĞLANTI değil, CSRF jetonlu POST formudur. *@
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <span class="ust-baglanti d-none d-sm-inline">@User.Identity.Name</span>
+    <form asp-controller="Hesap" asp-action="Cikis" method="post" class="d-inline">
+        <button type="submit" class="ust-baglanti btn btn-link p-0 border-0 align-baseline">Çıkış Yap</button>
+    </form>
+}
+else
+{
+    <a class="ust-baglanti" asp-controller="Hesap" asp-action="Giris">Giriş Yap</a>
+    <a class="ust-baglanti" asp-controller="Hesap" asp-action="Kayit">Kayıt Ol</a>
+}

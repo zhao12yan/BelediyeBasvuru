@@ -1,5 +1,9 @@
 // IIstatistikServisi: panel verisini getiren servis sözleşmesi (Core).
 using BelediyeBasvuru.Core.Interfaces;
+// Politikalar.Yonetici sabiti.
+using BelediyeBasvuru.Core.Yetki;
+// [Authorize] özniteliği.
+using Microsoft.AspNetCore.Authorization;
 // Controller, IActionResult gibi MVC sınıfları.
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +11,9 @@ namespace BelediyeBasvuru.Web.Controllers;
 
 // Adres: "/Yonetim", "/Yonetim/Index" → Views/Yonetim/Index.cshtml
 //
-// K1-09 (roller/policy'ler) eklenince bu satır açılacak, sayfa sadece Yönetici rolüne kapanacak:
-//     [Authorize(Roles = "Yonetici")]
-// Şu an Identity henüz kurulmadığı (K1-08 beklemede) için [Authorize] eklenmedi;
-// eklenirse Identity olmayan bir projede sayfa hiç açılmaz.
+// H2-K1: Yalnız Yönetici rolü. Girişsiz → /Hesap/Giris; başka rol → /Hesap/ErisimEngellendi (403).
+// Menüde bağlantıyı gizlemek yetki SAYILMAZ; kontrol sunucuda bu satırla yapılır (GG-08, GG-09).
+[Authorize(Policy = Politikalar.Yonetici)]
 public class YonetimController : Controller
 {
     // "IIstatistikServisi istatistikServisi" → ASP.NET Core, DependencyInjection.cs'te kayıtlı
