@@ -81,11 +81,22 @@ dotnet test
 dotnet run --project src/BelediyeBasvuru.Web
 ```
 
-✅ **Görmeniz gereken:** `dotnet test` → `Başarılı: 2`; `dotnet run` → `Now listening on: http://localhost:5248`. Tarayıcıda **http://localhost:5248**.
+✅ **Görmeniz gereken:** `dotnet test` → `Başarısız: 0`; `dotnet run` → `Now listening on: http://localhost:5248`. Tarayıcıda **http://localhost:5248**.
+
+> **Gerçek SQL testi hakkında:** `VeritabaniTestleri` gerçek bir SQL Server ister. `ConnectionStrings__Default`
+> ortam değişkeni yoksa bu test **"Atlandı" (Skipped)** görünür — yani veritabanı bu makinede **denenmemiştir**,
+> "geçti" sanmayın. CI'da veritabanı zorunludur (`VERITABANI_TESTI_ZORUNLU=1`); bağlantı yoksa CI kırmızı olur.
+> Windows'ta LocalDB ile kendiniz denemek için (PowerShell):
+>
+> ```powershell
+> $env:ConnectionStrings__Default="Server=(localdb)\mssqllocaldb;Trusted_Connection=True;TrustServerCertificate=True"; dotnet test
+> ```
 
 Durdurmak için `Ctrl+C`.
 
 > `dotnet` komutu bulunamıyorsa .NET 10 SDK kurulu değildir veya PATH'te değildir. Kurduktan sonra terminali kapatıp yeniden açın.
+> `dotnet --list-sdks` çıktısında **10.0.100 veya üstü** bir sürüm olmalı (`global.json` 10.0.100 + `latestFeature` ister;
+> 9.x SDK ile proje derlenmez). CI da `10.0.x` kullanır.
 
 ---
 
