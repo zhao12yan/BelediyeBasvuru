@@ -20,6 +20,9 @@ jobs:
     name: Derle ve test et
     # Ubuntu Linux sanal makinesinde çalış (Docker hazır gelir).
     runs-on: ubuntu-latest
+    env:
+      # H1-K1: CI'da gerçek SQL testi ZORUNLU. Bağlantı kurulamazsa test "atlandı" değil, kırmızı olur.
+      VERITABANI_TESTI_ZORUNLU: '1'
 
     steps:
       # Depodaki kodu sanal makineye indir.
@@ -61,6 +64,13 @@ jobs:
       # Tüm çözümü Release modunda derle (restore tekrar yapılmasın).
       - name: Derle
         run: dotnet build BelediyeBasvuru.sln --no-restore -c Release
+
+      # H2-K1: Kod modeli ile migration'lar uyumlu mu? Biri entity değiştirip migration eklemeyi unutursa CI kırmızı olur.
+      # (Migration'ların gerçek SQL Server'a uygulanması VeritabaniTestleri içinde test edilir.)
+      - name: Eksik migration kontrolü
+        run: |
+          dotnet tool restore
+          dotnet ef migrations has-pending-model-changes -p src/BelediyeBasvuru.Infrastructure -s src/BelediyeBasvuru.Web --configuration Release --no-build
 
       # xUnit testlerini çalıştır. Bir test kalırsa iş kırmızı olur.
       - name: Testleri çalıştır

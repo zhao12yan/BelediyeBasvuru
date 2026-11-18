@@ -1,0 +1,9 @@
+@* H2-K1: Giriş yapmış ama bu sayfa için yetkisi olmayan kullanıcı buraya gelir (HTTP 403). *@
+@{
+    ViewData["Title"] = "Erişim Engellendi";
+}
+<div class="text-center py-5">
+    <h1 class="h3">Bu sayfaya erişim yetkiniz yok</h1>
+    <p class="text-muted">Hesabınızın rolü bu işlem için uygun değil. Yanlış hesapla giriş yaptıysanız çıkış yapıp tekrar deneyin.</p>
+    <a class="btn btn-bb-birincil" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a>
+</div>

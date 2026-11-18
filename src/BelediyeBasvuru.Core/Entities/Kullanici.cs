@@ -19,4 +19,9 @@ public class Kullanici : IdentityUser
     // Kullanıcının adı ve soyadı. Veritabanında AspNetUsers tablosunda "AdSoyad" sütunu olur.
     // "= string.Empty" → başlangıç değeri boş metin; böylece null olmaz.
     public string AdSoyad { get; set; } = string.Empty;
+
+    // H2-K1: Birim personelinin bağlı olduğu birim. Vatandaş ve yöneticide null.
+    // Kişi 4: Birim tablosu (O-07) gelince buraya yabancı anahtar (FK) ilişkisi eklenecek.
+    // Yetki kuralı: personel yalnızca bu birimdeki başvurulara erişir (bkz. docs/tasarim/kimlik-yetki.md).
+    public int? BirimId { get; set; }
 }

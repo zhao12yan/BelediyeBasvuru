@@ -11,8 +11,9 @@ namespace BelediyeBasvuru.Tests;
 /// </summary>
 // "(WebApplicationFactory<Program> factory)" → xUnit bu nesneyi kurucuya kendisi verir.
 // IClassFixture → bu sınıftaki tüm testler aynı factory'yi paylaşır (uygulama bir kez açılır).
-public class IskeletTestleri(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+// H2-K1: Uygulama artık Identity kullandığı için TestUygulamasi (bellek içi SQLite) ile açılır.
+public class IskeletTestleri(TestUygulamasi factory)
+    : IClassFixture<TestUygulamasi>
 {
     // [Fact] → parametresiz tek bir test. Adı: Ne_Olunca_NeOlmalı.
     [Fact]

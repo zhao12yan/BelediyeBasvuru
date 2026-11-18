@@ -49,6 +49,13 @@ services:
       # appsettings.json'daki LocalDB adresini ezer: konteyner içinde sunucu adı "db" (yukarıdaki servis).
       # "__" (iki alt çizgi) → ayarlardaki ":" karşılığıdır (ConnectionStrings:Default).
       ConnectionStrings__Default: "Server=db,1433;Database=BelediyeBasvuru;User Id=sa;Password=${SA_PAROLA:-Yerel_Gelistirme_2026!};TrustServerCertificate=True"
+      # H1-K1: Açılışta migration uygula (tablolar + 3 rol), sonra örnek hesapları oluştur.
+      Veritabani__BaslangictaHazirla: "true"
+      # Örnek hesap parolaları DEPODA YOK. .env dosyasına yazarsanız hesaplar oluşturulur; boşsa oluşturulmaz.
+      # Sıra appsettings.Development.json'daki OrnekHesaplar ile aynı: 0 yönetici, 1 personel, 2 vatandaş.
+      OrnekHesaplar__0__Parola: ${ORNEK_PAROLA_YONETICI:-}
+      OrnekHesaplar__1__Parola: ${ORNEK_PAROLA_PERSONEL:-}
+      OrnekHesaplar__2__Parola: ${ORNEK_PAROLA_VATANDAS:-}
     ports:
       # Bilgisayarınızın 8080 portu → konteynerin 8080 portu.  Tarayıcı: http://localhost:8080
       - "8080:8080"

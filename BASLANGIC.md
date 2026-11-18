@@ -81,11 +81,41 @@ dotnet test
 dotnet run --project src/BelediyeBasvuru.Web
 ```
 
-✅ **Görmeniz gereken:** `dotnet test` → `Başarılı: 2`; `dotnet run` → `Now listening on: http://localhost:5248`. Tarayıcıda **http://localhost:5248**.
+**Veritabanı kurulum sırası (her ortamda aynı):** veritabanı erişimi → migration (tablolar + 3 rol) → örnek hesaplar.
+`dotnet run` (Development) ve Docker bu sırayı açılışta kendisi uygular (`Veritabani:BaslangictaHazirla=true`).
+Elle yapmak isterseniz (ör. Development dışı ortam):
+
+```bash
+dotnet ef database update -p src/BelediyeBasvuru.Infrastructure -s src/BelediyeBasvuru.Web
+```
+
+**Örnek hesaplar (isteğe bağlı):** `yonetici@ornek.test`, `personel@ornek.test` (birim 1), `vatandas@ornek.test`.
+Parolaları depoda **yoktur**; siz belirlersiniz (en az 8 karakter, büyük/küçük harf ve rakam). Parola verilmeyen hesap oluşturulmaz.
+Yol B'de user-secrets ile (0 = yönetici, 1 = personel, 2 = vatandaş):
+
+```bash
+dotnet user-secrets set "OrnekHesaplar:0:Parola" "KendiParolaniz1" --project src/BelediyeBasvuru.Web
+```
+
+Yol A'da (Docker) `.env.ornek` dosyasını `.env` olarak kopyalayıp `ORNEK_PAROLA_*` satırlarını doldurun.
+Vatandaş hesabını ayrıca sitedeki **Kayıt Ol** sayfasından da açabilirsiniz. Ayrıntılar: `docs/tasarim/kimlik-yetki.md`.
+
+✅ **Görmeniz gereken:** `dotnet test` → `Başarısız: 0`; `dotnet run` → `Now listening on: http://localhost:5248`. Tarayıcıda **http://localhost:5248**.
+
+> **Gerçek SQL testi hakkında:** `VeritabaniTestleri` gerçek bir SQL Server ister. `ConnectionStrings__Default`
+> ortam değişkeni yoksa bu test **"Atlandı" (Skipped)** görünür — yani veritabanı bu makinede **denenmemiştir**,
+> "geçti" sanmayın. CI'da veritabanı zorunludur (`VERITABANI_TESTI_ZORUNLU=1`); bağlantı yoksa CI kırmızı olur.
+> Windows'ta LocalDB ile kendiniz denemek için (PowerShell):
+>
+> ```powershell
+> $env:ConnectionStrings__Default="Server=(localdb)\mssqllocaldb;Trusted_Connection=True;TrustServerCertificate=True"; dotnet test
+> ```
 
 Durdurmak için `Ctrl+C`.
 
 > `dotnet` komutu bulunamıyorsa .NET 10 SDK kurulu değildir veya PATH'te değildir. Kurduktan sonra terminali kapatıp yeniden açın.
+> `dotnet --list-sdks` çıktısında **10.0.100 veya üstü** bir sürüm olmalı (`global.json` 10.0.100 + `latestFeature` ister;
+> 9.x SDK ile proje derlenmez). CI da `10.0.x` kullanır.
 
 ---
 
