@@ -10,17 +10,18 @@ namespace BelediyeBasvuru.Tests;
 
 /// <summary>
 /// Yönetim paneli sayfasının ayağa kalktığını doğrulayan duman (smoke) testi.
-/// IskeletTestleri'ndeki ana sayfa testiyle aynı desen: panel SahteIstatistikServisi'nden
-/// veri aldığı için veritabanına dokunmaz, bu yüzden her ortamda (CI dahil) çalışır.
+/// H2-K1: Panel artık yalnız Yönetici rolüne açık; test önce yönetici olarak giriş yapar.
+/// Yetkisiz erişim senaryoları KimlikTestleri'ndedir.
 /// </summary>
-public class YonetimPaneliTestleri(WebApplicationFactory<Program> factory)
-    : IClassFixture<WebApplicationFactory<Program>>
+public class YonetimPaneliTestleri(TestUygulamasi factory)
+    : IClassFixture<TestUygulamasi>
 {
     [Fact]
-    public async Task YonetimPaneli_200_Doner()
+    public async Task YonetimPaneli_Yoneticiye_200_Doner()
     {
         // HAZIRLA
-        var client = factory.CreateClient();
+        var client = factory.Istemci();
+        await FormYardimcisi.GirisYapAsync(client, "yonetici@test.local");
 
         // ÇALIŞTIR
         var yanit = await client.GetAsync("/Yonetim");
