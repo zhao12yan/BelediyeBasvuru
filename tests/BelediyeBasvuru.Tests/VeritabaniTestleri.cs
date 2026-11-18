@@ -8,20 +8,20 @@ namespace BelediyeBasvuru.Tests;
 /// <summary>
 /// Gerçek SQL Server'a karşı modelin oluşturulabildiğini doğrular.
 /// CI'da ConnectionStrings__Default (SQL Server 2022 konteyneri) ile çalışır.
-/// Bu değişken yoksa (ör. yerel makine) test hiçbir şey yapmadan geçer.
 /// </summary>
+/// <remarks>
+/// H1-K1: Bağlantı yoksa test eskiden sessizce "Başarılı" sayılıyordu; bu, veritabanı hiç
+/// denenmediği hâlde yanlış güven veriyordu. Artık:
+///  - Bağlantı yok  → test "Atlandı" (Skipped) olarak görünür, nedeni yazılır.
+///  - VERITABANI_TESTI_ZORUNLU=1 (CI) ve bağlantı yok → test KIRMIZI olur.
+/// Yerelde denemek için: $env:ConnectionStrings__Default="Server=(localdb)\mssqllocaldb;Trusted_Connection=True;TrustServerCertificate=True"
+/// </remarks>
 public class VeritabaniTestleri
 {
-    [Fact]
+    [SkippableFact]
     public async Task Model_SqlServerda_Olusturulabilir()
     {
-        // Bağlantı dizesini ortam değişkeninden oku (CI bunu ayarlar).
-        var baglanti = Environment.GetEnvironmentVariable("ConnectionStrings__Default");
-        // Değişken yoksa veya boşsa:
-        if (string.IsNullOrWhiteSpace(baglanti))
-        {
-            return; // Veritabanı yok: atla.
-        }
+        var baglanti = VeritabaniOrtami.BaglantiyiAlVeyaAtla();
 
         // Her çalıştırmada ayrı, geçici bir veritabanı adı kullan.
         // Böylece testler birbirinin verisini bozmaz. Guid → benzersiz rastgele kimlik.
@@ -49,5 +49,32 @@ public class VeritabaniTestleri
             // Test geçse de kalsa da geçici veritabanını sil; geride çöp kalmasın.
             await context.Database.EnsureDeletedAsync();
         }
+    }
+}
+
+/// <summary>
+/// Gerçek SQL Server isteyen testlerin ortak ön koşul kontrolü.
+/// </summary>
+internal static class VeritabaniOrtami
+{
+    /// <summary>
+    /// ConnectionStrings__Default'u döndürür. Yoksa testi atlar; CI'da (VERITABANI_TESTI_ZORUNLU=1) testi düşürür.
+    /// </summary>
+    public static string BaglantiyiAlVeyaAtla()
+    {
+        var baglanti = Environment.GetEnvironmentVariable("ConnectionStrings__Default");
+        if (!string.IsNullOrWhiteSpace(baglanti))
+        {
+            return baglanti;
+        }
+
+        // CI veritabanını kurmayı unuttuysa bunu "geçti" diye saklamayalım.
+        if (Environment.GetEnvironmentVariable("VERITABANI_TESTI_ZORUNLU") == "1")
+        {
+            Assert.Fail("VERITABANI_TESTI_ZORUNLU=1 ama ConnectionStrings__Default tanımlı değil; gerçek SQL testi çalıştırılamadı.");
+        }
+
+        Skip.If(true, "ConnectionStrings__Default tanımlı değil; gerçek SQL Server testi bu makinede ÇALIŞTIRILMADI.");
+        return string.Empty; // Buraya gelinmez (Skip istisna fırlatır).
     }
 }

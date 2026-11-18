@@ -20,6 +20,9 @@ jobs:
     name: Derle ve test et
     # Ubuntu Linux sanal makinesinde çalış (Docker hazır gelir).
     runs-on: ubuntu-latest
+    env:
+      # H1-K1: CI'da gerçek SQL testi ZORUNLU. Bağlantı kurulamazsa test "atlandı" değil, kırmızı olur.
+      VERITABANI_TESTI_ZORUNLU: '1'
 
     steps:
       # Depodaki kodu sanal makineye indir.
