@@ -2,6 +2,8 @@
 using BelediyeBasvuru.Infrastructure;
 using BelediyeBasvuru.Infrastructure.Data;
 using BelediyeBasvuru.Web.Guvenlik;
+// AutoValidateAntiforgeryTokenAttribute (global CSRF filtresi).
+using Microsoft.AspNetCore.Mvc;
 
 // ===== 1. AŞAMA: Servisleri kaydet (uygulama başlamadan önce) =====
 
@@ -9,12 +11,15 @@ using BelediyeBasvuru.Web.Guvenlik;
 var builder = WebApplication.CreateBuilder(args);
 
 // MVC'yi aç: Controller sınıfları + Razor görünümleri (Views klasörü).
-builder.Services.AddControllersWithViews();
+// H3-K1: Tüm POST/PUT/DELETE istekleri CSRF jetonu ister (GET/HEAD hariç). [ValidateAntiForgeryToken] unutulsa bile korunur.
+builder.Services.AddControllersWithViews(o => o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 // Veritabanı ve diğer altyapı servislerini kaydet (bkz. Infrastructure/DependencyInjection.cs).
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // H2-K1: Identity (çerezli giriş), parola/kilitleme kuralları, roller ve policy'ler (bkz. Guvenlik/KimlikKurulumu.cs).
 builder.Services.AddKimlik();
+// H3-K1: Giriş / başvuru / sorgu için ayrı istek sınırları (aşılınca 429). Bkz. Guvenlik/IstekSinirlari.cs.
+builder.Services.AddIstekSinirlari(builder.Configuration);
 
 // Kayıtlar bitti; uygulama nesnesini oluştur.
 var app = builder.Build();
@@ -38,10 +43,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// H3-K1: Her yanıta güvenlik başlıkları (nosniff, iframe yasağı, CSP ...). Bkz. Guvenlik/GuvenlikBasliklari.cs.
+app.UseGuvenlikBasliklari();
 // HTTP ile gelen istekleri HTTPS'e yönlendir (HTTPS portu tanımlı değilse sadece uyarı yazar).
 app.UseHttpsRedirection();
 // Gelen adresin hangi controller/action'a gideceğini belirle.
 app.UseRouting();
+// H3-K1: İstek sınırı; hangi action'ın hangi politikayı kullandığını bilmesi için UseRouting'den SONRA.
+app.UseRateLimiter();
 
 // Önce "kim bu?" (kimlik çerezini oku), sonra "buna izni var mı?" ([Authorize] kontrolü). Sıra önemli.
 app.UseAuthentication();

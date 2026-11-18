@@ -1,7 +1,9 @@
 using BelediyeBasvuru.Core.Entities;
 using BelediyeBasvuru.Core.Yetki;
+using BelediyeBasvuru.Web.Guvenlik;
 using BelediyeBasvuru.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +27,7 @@ public class HesapController(
     public IActionResult Kayit() => View(new KayitModeli());
 
     [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+    [EnableRateLimiting(IstekSinirlari.Giris)] // H3-K1: toplu sahte kayda karşı (429).
     public async Task<IActionResult> Kayit(KayitModeli model)
     {
         if (!ModelState.IsValid)
@@ -71,6 +74,7 @@ public class HesapController(
         View(new GirisModeli { DonusAdresi = returnUrl });
 
     [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
+    [EnableRateLimiting(IstekSinirlari.Giris)] // H3-K1: parola deneme hızına sınır (429); kilitlemeye ek koruma.
     public async Task<IActionResult> Giris(GirisModeli model)
     {
         if (!ModelState.IsValid)

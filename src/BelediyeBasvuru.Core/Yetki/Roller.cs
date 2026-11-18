@@ -34,6 +34,11 @@ public static class Politikalar
     public const string Yonetici = "YoneticiPolicy";
     /// <summary>Personel ekranları: Birim personeli VEYA yönetici.</summary>
     public const string PersonelEkrani = "PersonelEkraniPolicy";
+    /// <summary>
+    /// H3-K1: Tek bir kayda (ör. başvuru) erişim — sahiplik / aynı birim / yönetici.
+    /// <c>await authorizationService.AuthorizeAsync(User, basvuru, Politikalar.KayitErisimi)</c>
+    /// </summary>
+    public const string KayitErisimi = "KayitErisimiPolicy";
 }
 
 /// <summary>Kimlik çerezine eklenen özel claim adları.</summary>

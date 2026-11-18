@@ -2,6 +2,7 @@ using BelediyeBasvuru.Core.Entities;
 using BelediyeBasvuru.Core.Yetki;
 using BelediyeBasvuru.Infrastructure.Data;
 using BelediyeBasvuru.Infrastructure.Kimlik;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace BelediyeBasvuru.Web.Guvenlik;
@@ -56,7 +57,10 @@ public static class KimlikKurulumu
             .AddPolicy(Politikalar.Yonetici, p => p.RequireRole(Roller.Yonetici))
             .AddPolicy(Politikalar.PersonelEkrani, p => p.RequireAssertion(c =>
                 c.User.IsInRole(Roller.Yonetici) ||
-                (c.User.IsInRole(Roller.BirimPersoneli) && c.User.HasClaim(h => h.Type == OzelClaimler.BirimId))));
+                (c.User.IsInRole(Roller.BirimPersoneli) && c.User.HasClaim(h => h.Type == OzelClaimler.BirimId))))
+            // H3-K1: Tek kayda erişim (sahiplik / aynı birim / yönetici) — bkz. KayitErisimIsleyicisi.
+            .AddPolicy(Politikalar.KayitErisimi, p => p.RequireAuthenticatedUser().AddRequirements(new KayitErisimGereksinimi()));
+        services.AddSingleton<IAuthorizationHandler, KayitErisimIsleyicisi>();
 
         return services;
     }

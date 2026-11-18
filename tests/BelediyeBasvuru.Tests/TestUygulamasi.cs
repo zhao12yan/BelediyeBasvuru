@@ -34,6 +34,12 @@ public class TestUygulamasi : WebApplicationFactory<Program>
     {
         // Açılışta migration/örnek hesap çalışmasın (SQL Server yok); test verisini aşağıda biz kuruyoruz.
         builder.UseSetting("Veritabani:BaslangictaHazirla", "false");
+        // Testlerde bütün istekler aynı "IP"den gelir; sınır testi dışındaki testler 429'a takılmasın.
+        foreach (var politika in new[] { "giris", "basvuru", "sorgu" })
+        {
+            builder.UseSetting($"IstekSiniri:{politika}:Limit", "10000");
+        }
+
         foreach (var (anahtar, deger) in EkAyarlar)
         {
             builder.UseSetting(anahtar, deger);
