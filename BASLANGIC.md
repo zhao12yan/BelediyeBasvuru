@@ -81,6 +81,25 @@ dotnet test
 dotnet run --project src/BelediyeBasvuru.Web
 ```
 
+**Veritabanı kurulum sırası (her ortamda aynı):** veritabanı erişimi → migration (tablolar + 3 rol) → örnek hesaplar.
+`dotnet run` (Development) ve Docker bu sırayı açılışta kendisi uygular (`Veritabani:BaslangictaHazirla=true`).
+Elle yapmak isterseniz (ör. Development dışı ortam):
+
+```bash
+dotnet ef database update -p src/BelediyeBasvuru.Infrastructure -s src/BelediyeBasvuru.Web
+```
+
+**Örnek hesaplar (isteğe bağlı):** `yonetici@ornek.test`, `personel@ornek.test` (birim 1), `vatandas@ornek.test`.
+Parolaları depoda **yoktur**; siz belirlersiniz (en az 8 karakter, büyük/küçük harf ve rakam). Parola verilmeyen hesap oluşturulmaz.
+Yol B'de user-secrets ile (0 = yönetici, 1 = personel, 2 = vatandaş):
+
+```bash
+dotnet user-secrets set "OrnekHesaplar:0:Parola" "KendiParolaniz1" --project src/BelediyeBasvuru.Web
+```
+
+Yol A'da (Docker) `.env.ornek` dosyasını `.env` olarak kopyalayıp `ORNEK_PAROLA_*` satırlarını doldurun.
+Vatandaş hesabını ayrıca sitedeki **Kayıt Ol** sayfasından da açabilirsiniz. Ayrıntılar: `docs/tasarim/kimlik-yetki.md`.
+
 ✅ **Görmeniz gereken:** `dotnet test` → `Başarısız: 0`; `dotnet run` → `Now listening on: http://localhost:5248`. Tarayıcıda **http://localhost:5248**.
 
 > **Gerçek SQL testi hakkında:** `VeritabaniTestleri` gerçek bir SQL Server ister. `ConnectionStrings__Default`

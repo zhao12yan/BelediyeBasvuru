@@ -14,6 +14,8 @@
   <ItemGroup>
     <!-- Test altyapısı (dotnet test komutunun testleri bulup çalıştırması için). -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <!-- Bellek içi SQLite: kimlik/yetki testleri SQL Server kurulu olmayan makinede de çalışsın. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.13" />
     <!-- xUnit: [Fact], Assert.Equal gibi test araçları. -->
     <PackageReference Include="xunit" Version="2.9.3" />
     <!-- Visual Studio / VS Code Test Explorer'ın xUnit testlerini görmesi için. -->

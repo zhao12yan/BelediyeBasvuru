@@ -39,10 +39,14 @@ public class VeritabaniTestleri
         await using var context = new AppDbContext(options);
         try
         {
-            // Modeldeki tüm tabloları oluştur; true dönmeli (yeni veritabanı açıldı).
-            Assert.True(await context.Database.EnsureCreatedAsync());
-            // Veritabanına bağlanılabildiğini doğrula.
+            // H2-K1: EnsureCreated değil GERÇEK migration'lar uygulanır; kurulumda çalışan adımın aynısı.
+            await context.Database.MigrateAsync();
+            // Veritabanına bağlanılabildiğini ve bekleyen migration kalmadığını doğrula.
             Assert.True(await context.Database.CanConnectAsync());
+            Assert.Empty(await context.Database.GetPendingMigrationsAsync());
+            // Üç rol migration ile gelmiş olmalı (uygulama açılışında oluşturulmaz).
+            var roller = await context.Roles.Select(r => r.Name).OrderBy(r => r).ToListAsync();
+            Assert.Equal(["BirimPersoneli", "Vatandas", "Yonetici"], roller);
         }
         finally
         {

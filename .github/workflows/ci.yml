@@ -65,6 +65,13 @@ jobs:
       - name: Derle
         run: dotnet build BelediyeBasvuru.sln --no-restore -c Release
 
+      # H2-K1: Kod modeli ile migration'lar uyumlu mu? Biri entity değiştirip migration eklemeyi unutursa CI kırmızı olur.
+      # (Migration'ların gerçek SQL Server'a uygulanması VeritabaniTestleri içinde test edilir.)
+      - name: Eksik migration kontrolü
+        run: |
+          dotnet tool restore
+          dotnet ef migrations has-pending-model-changes -p src/BelediyeBasvuru.Infrastructure -s src/BelediyeBasvuru.Web --configuration Release --no-build
+
       # xUnit testlerini çalıştır. Bir test kalırsa iş kırmızı olur.
       - name: Testleri çalıştır
         run: dotnet test BelediyeBasvuru.sln --no-build -c Release --verbosity normal
