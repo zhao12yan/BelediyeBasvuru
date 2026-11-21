@@ -27,6 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         // Önce Identity'nin kendi tablolarını tanımlaması için temel sınıfı çağırıyoruz. SİLMEYİN.
         base.OnModelCreating(builder);
+        builder.Entity<BelediyeBasvuru.Infrastructure.Kimlik.DenetimKaydi>().ToTable("DenetimKayitlari");
 
         // Tüm IEntityTypeConfiguration<T> sınıflarını (Data/Configurations) otomatik uygular.
         // Yani her tablonun ayarını ayrı dosyaya yazarsınız, burayı değiştirmeniz gerekmez.

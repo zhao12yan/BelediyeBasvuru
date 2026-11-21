@@ -200,3 +200,7 @@ Ayrıntılı kurallar: [CONTRIBUTING.md](CONTRIBUTING.md)
 | Windows dışı makinede `dotnet run` veritabanına bağlanamıyor | LocalDB sadece Windows'ta var. Yol A'yı (Docker) kullanın. |
 | CSS değişikliğim görünmüyor | Tarayıcıda `Ctrl+F5` (önbelleksiz yenile). Docker'daysanız `--build` ile yeniden başlatın. |
 | `git push` izin hatası | Davetiyeyi kabul ettiğinizden ve doğru hesapla giriş yaptığınızdan emin olun. |
+
+## Ortak sürüm provası
+
+%60 iç teslim 4 Aralık, kontrol 7 Aralık; final iç teslim 18 Aralık, sunum 21 Aralık 2026. Ayrı veritabanında [kurulum ve bakım](docs/kilavuz/kurulum-bakim.md) ve [üç rol ile demo](docs/test/kontrol2-demo.md) adımlarını izleyin.

@@ -23,3 +23,7 @@ Kararlar:
 - Roller README'deki Ekip tablosuna işlendi.
 - Görevler herkes depoya katıldıktan sonra GitHub issue'su olarak açılacak.
 Bu haftanın işleri: Kontrol 1 (2 Kasım) analiz belgeleri; iç teslim 31 Ekim, 1. İlerleme Raporu 1 Kasım.
+
+## 21 Kasım 2026 · Görev takvimi güncellemesi
+
+Haftalık iç teslimler 6, 13, 20 ve 27 Kasım ile 4, 11 ve 18 Aralık Cuma saat 23.59'dur. %60 paket 4 Aralık'ta hazırlanır ve 7 Aralık'ta sunulur. Final paketinin iç teslimi 18 Aralık, resmî teslimi 21 Aralık'tır. [Haftalık görevler](planlama/gantt-v3.md).

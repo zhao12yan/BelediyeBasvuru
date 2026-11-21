@@ -1,0 +1,32 @@
+@using BelediyeBasvuru.Infrastructure.Kimlik
+@using BelediyeBasvuru.Core.Yetki
+@model HesapGorunumu
+@{ ViewData["Title"] = "Kullanıcı yönetimi"; }
+<h1>Kullanıcı yönetimi</h1>
+@if (TempData["Sonuc"] is string mesaj) { <p role="status">@mesaj</p> }
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="get" asp-action="Index" class="mb-4">
+    <label for="eposta">Hesabın e-posta adresi</label>
+    <input id="eposta" name="eposta" type="email" value="@Model?.Eposta" required />
+    <button class="btn btn-secondary">Hesabı bul</button>
+</form>
+@if (Model is not null)
+{
+    <h2>@Model.Eposta</h2>
+    <form method="post" asp-action="Kaydet">
+        <input type="hidden" name="hedefId" value="@Model.Id" />
+        <input type="hidden" name="surum" value="@Model.Surum" />
+        <label for="rol">Rol</label>
+        <select id="rol" name="Rol">
+            @foreach (var rol in Roller.Tumu) { <option selected="@(Model.Yetki.Rol == rol)" value="@rol">@rol</option> }
+        </select>
+        <label for="birim">Personel birimi</label>
+        <select id="birim" name="BirimId">
+            <option value="">Birimsiz</option>
+            @foreach (int id in ViewBag.Birimler) { <option selected="@(Model.Yetki.BirimId == id)" value="@id">Birim @id</option> }
+        </select>
+        <label><input type="checkbox" name="PasifMi" value="true" checked="@Model.Yetki.PasifMi" /> Hesabı devre dışı bırak</label>
+        <input type="hidden" name="PasifMi" value="false" />
+        <button class="btn btn-primary">Kaydet</button>
+    </form>
+}
