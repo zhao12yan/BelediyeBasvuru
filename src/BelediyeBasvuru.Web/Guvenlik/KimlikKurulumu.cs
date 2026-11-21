@@ -32,10 +32,15 @@ public static class KimlikKurulumu
 
                 // Kullanıcı adı = e-posta; aynı e-postayla ikinci hesap açılamaz.
                 o.User.RequireUniqueEmail = true;
+                o.SignIn.RequireConfirmedAccount = true;
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddClaimsPrincipalFactory<KullaniciClaimFabrikasi>()
             .AddDefaultTokenProviders();
+
+        services.AddScoped<IUserConfirmation<Kullanici>, HesapEtkinlikKontrolu>();
+        services.AddScoped<HesapYonetimi>();
+        services.Configure<SecurityStampValidatorOptions>(o => o.ValidationInterval = TimeSpan.Zero);
 
         services.ConfigureApplicationCookie(o =>
         {

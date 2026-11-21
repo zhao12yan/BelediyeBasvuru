@@ -9,7 +9,7 @@ name: CI
 on:
   # main dalına PR açıldığında veya PR'a yeni commit geldiğinde.
   pull_request:
-    branches: [main]
+    branches: [main, 'kisi1/**']
   # main dalına doğrudan push yapıldığında.
   push:
     branches: [main]
@@ -87,6 +87,14 @@ jobs:
         uses: actions/checkout@v4
 
       # docker-compose.yml'deki db + web konteynerlerini derle ve başlat; hazır olana kadar bekle.
+      - name: Prova için geçici hesap parolaları oluştur
+        run: |
+          for key in SA_PAROLA ORNEK_PAROLA_YONETICI ORNEK_PAROLA_PERSONEL ORNEK_PAROLA_VATANDAS; do
+            value="Demo$(openssl rand -hex 16)Aa1!"
+            echo "::add-mask::$value"
+            echo "$key=$value" >> "$GITHUB_ENV"
+          done
+
       - name: Konteynerleri derle ve başlat
         run: docker compose up -d --build --wait --wait-timeout 300
 
@@ -101,6 +109,10 @@ jobs:
           curl -fsS -o /dev/null http://localhost:8080/css/anasayfa.css
           curl -fsS -o /dev/null http://localhost:8080/img/anasayfa/batman-panorama.jpg
           echo "Docker ile uygulama çalışıyor."
+
+      - name: Ayrı veritabanına yedek geri yükleme provası
+        run: |
+          docker compose exec -T db sh -c 'SQLCMDPASSWORD="$MSSQL_SA_PASSWORD" /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -b' < scripts/veritabani-prova.sql
 
       # Bir adım başarısız olursa hatayı görebilmek için konteyner loglarını yazdır.
       - name: Konteyner logları (hata olursa)

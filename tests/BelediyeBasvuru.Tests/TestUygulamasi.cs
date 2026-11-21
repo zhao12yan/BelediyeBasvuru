@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.DataProtection;
 using System.Text.RegularExpressions;
 using BelediyeBasvuru.Core.Entities;
 using BelediyeBasvuru.Core.Yetki;
@@ -48,6 +49,7 @@ public class TestUygulamasi : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             // SQL Server kaydını kaldır, aynı AppDbContext'i SQLite ile kaydet.
+            services.AddDataProtection().UseEphemeralDataProtectionProvider();
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<AppDbContext>>();
             services.AddDbContext<AppDbContext>(o => o.UseSqlite(_baglanti));

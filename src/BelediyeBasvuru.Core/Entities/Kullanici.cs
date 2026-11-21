@@ -23,5 +23,7 @@ public class Kullanici : IdentityUser
     // H2-K1: Birim personelinin bağlı olduğu birim. Vatandaş ve yöneticide null.
     // Kişi 4: Birim tablosu (O-07) gelince buraya yabancı anahtar (FK) ilişkisi eklenecek.
     // Yetki kuralı: personel yalnızca bu birimdeki başvurulara erişir (bkz. docs/tasarim/kimlik-yetki.md).
+    public bool PasifMi { get; set; }
+
     public int? BirimId { get; set; }
 }

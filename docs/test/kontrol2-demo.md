@@ -11,8 +11,8 @@
 | # | Adım | Beklenen | Durum |
 |---|---|---|---|
 | 0.1 | Temiz klasöre `git clone`, `.env.ornek` → `.env`, `ORNEK_PAROLA_*` doldur | — | Hazır |
-| 0.2 | `docker compose up --build` | Log'da migration + "Örnek hesap oluşturuldu" ×3; http://localhost:8080 açılır | Hazır (H2-K1) |
-| 0.3 | Yol B: `dotnet test` (LocalDB bağlantısıyla) | Başarısız: 0, Atlanan: 0 | Hazır |
+| 0.2 | `docker compose up --build` | Log'da migration + "Örnek hesap oluşturuldu" ×3; http://localhost:8080 açılır | Docker CI provası bekliyor |
+| 0.3 | Yol B: `dotnet test` (LocalDB bağlantısıyla) | Başarısız: 0, Atlanan: 0 | Gerçek SQL Server provası bekliyor |
 
 ## 1. Vatandaş
 

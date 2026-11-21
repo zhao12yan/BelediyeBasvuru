@@ -9,10 +9,12 @@ birim personelinin başvuruları işlediği ve yöneticinin istatistik paneli ku
 | Kontrol | Tarih | Kapsam |
 |---|---|---|
 | Kontrol 1 | 2 Kasım 2026 | Planlama + Sistem Çözümleme + ilk tasarım |
-| Kontrol 2 | 30 Kasım 2026 | Tasarım + çalışan temel sistem (Artım 1) |
-| Kontrol 3 | 21 Aralık 2026 | Doğrulama-geçerleme, kurulum/bakım, nihai rapor (Artım 2) |
+| Kontrol 2 | 7 Aralık 2026 (iç teslim 4 Aralık) | Tasarım + çalışan temel sistem (Artım 1) |
+| Kontrol 3 | 21 Aralık 2026 (iç teslim 18 Aralık) | Doğrulama-geçerleme, kurulum/bakım, nihai rapor (Artım 2) |
 
 > Teslim tarihi notu: Yönergede "11 Aralık 2025" yazıyor; plan kontrol tarihlerine göre hazırlandı. Final tarihi lab asistanıyla yazılı teyit edilecek.
+
+Haftalık tarihler ve sorumlular [Gantt planında](docs/planlama/gantt-v3.md) yer alır.
 
 ## Ekip
 
