@@ -19,14 +19,14 @@ public sealed class SahteIstatistikServisi : IIstatistikServisi
 {
     public Task<IstatistikOzeti> OzetGetirAsync()
     {
-        // Gerçek sorgu olmadığı için veritabanına gidilmiyor; elle yazılmış örnek veri döndürülüyor.
-        // Sayılar docs/analiz/gostergeler.md'deki tanımlarla tutarlı (durum/kategori adları orada da geçer).
+        // Durum adları Core/Enums/BasvuruDurumu.cs ile birebir eşleşir.
         var durumDagilimi = new List<DurumAdedi>
         {
             new("Yeni", 18),
-            new("İnceleniyor", 11),
-            new("Atandı", 7),
-            new("Çözüldü", 42),
+            new("Atandi", 7),
+            new("Islemde", 11),
+            new("Cozuldu", 42),
+            new("Kapatildi", 5),
             new("Reddedildi", 3),
         };
 
@@ -39,9 +39,8 @@ public sealed class SahteIstatistikServisi : IIstatistikServisi
             new("Diğer", 10),
         };
 
-        // Son 7 gün için örnek bir trend: bugünden başlayıp geriye gidiyoruz, sonra sırayı
-        // (eskiden yeniye) çeviriyoruz ki grafikte soldan sağa doğru akış doğru görünsün.
-        var bugun = DateOnly.FromDateTime(DateTime.Today);
+        // Son 7 gün için örnek bir trend: gün sınırlarında Türkiye saati (UTC+3) esas alınır.
+        var bugun = TurkiyeBugunuGetir();
         var ornekGunlukAdetler = new[] { 9, 7, 12, 8, 14, 10, 6 };
         var haftalikTrend = Enumerable.Range(0, 7)
             .Select(i => new GunlukAdet(bugun.AddDays(-i), ornekGunlukAdetler[i]))
@@ -49,7 +48,7 @@ public sealed class SahteIstatistikServisi : IIstatistikServisi
             .ToList();
 
         var toplamAcik = durumDagilimi
-            .Where(d => d.Durum is "Yeni" or "İnceleniyor" or "Atandı")
+            .Where(d => d.Durum is "Yeni" or "Atandi" or "Islemde")
             .Sum(d => d.Adet);
 
         var ozet = new IstatistikOzeti(
@@ -63,5 +62,18 @@ public sealed class SahteIstatistikServisi : IIstatistikServisi
         // Task.FromResult ile "tamamlanmış görev" olarak döndürüyoruz; arayüz async kalsın diye
         // (ileride gerçek EF Core sorgusu await gerektirecek, imza o yüzden Task<T> döner).
         return Task.FromResult(ozet);
+    }
+
+    private static DateOnly TurkiyeBugunuGetir()
+    {
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("Turkey Standard Time");
+            return DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tz));
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            return DateOnly.FromDateTime(DateTime.UtcNow.AddHours(3));
+        }
     }
 }

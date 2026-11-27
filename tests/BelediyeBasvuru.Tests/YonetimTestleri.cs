@@ -2,7 +2,8 @@
 using System.Net;
 // WebApplicationFactory: uygulamayı test içinde bellekte çalıştırır (gerçek sunucu açmaz).
 using Microsoft.AspNetCore.Mvc.Testing;
-// Test edilen servis ve DTO'lar.
+// Test edilen servis, enum ve DTO'lar.
+using BelediyeBasvuru.Core.Enums;
 using BelediyeBasvuru.Core.Interfaces;
 using BelediyeBasvuru.Infrastructure.Services;
 
@@ -50,7 +51,7 @@ public class SahteIstatistikServisiTestleri
     }
 
     [Fact]
-    public async Task OzetGetirAsync_AcikBasvuruSayisi_YeniInceleniyorAtandiToplamiyleEslesir()
+    public async Task OzetGetirAsync_AcikBasvuruSayisi_CozulduKapatildiReddedildiDisindakilerleEslesir()
     {
         // HAZIRLA
         var servis = new SahteIstatistikServisi();
@@ -58,12 +59,32 @@ public class SahteIstatistikServisiTestleri
         // ÇALIŞTIR
         var ozet = await servis.OzetGetirAsync();
 
-        // DOĞRULA: docs/analiz/gostergeler.md G1 tanımı: "Çözüldü/Kapatıldı/Reddedildi
-        // DIŞINDAKİ" başvurular açık sayılır; burada bu küme Yeni+İnceleniyor+Atandı'dır.
+        // DOĞRULA: docs/analiz/gostergeler.md G1 tanımı: "Cozuldu/Kapatildi/Reddedildi
+        // DIŞINDAKİ" başvurular açık sayılır (Yeni + Atandi + Islemde).
         var beklenenAcik = ozet.DurumDagilimi
-            .Where(d => d.Durum is "Yeni" or "İnceleniyor" or "Atandı")
+            .Where(d => d.Durum is nameof(BasvuruDurumu.Yeni) or nameof(BasvuruDurumu.Atandi) or nameof(BasvuruDurumu.Islemde))
             .Sum(d => d.Adet);
 
         Assert.Equal(beklenenAcik, ozet.ToplamAcikBasvuru);
+    }
+
+    [Fact]
+    public async Task OzetGetirAsync_DurumAdlariOrtakEnumIleEslesir()
+    {
+        var servis = new SahteIstatistikServisi();
+        var ozet = await servis.OzetGetirAsync();
+        var gecerliAdlar = Enum.GetNames<BasvuruDurumu>().ToHashSet();
+
+        Assert.NotEmpty(ozet.DurumDagilimi);
+        Assert.All(ozet.DurumDagilimi, d => Assert.Contains(d.Durum, gecerliAdlar));
+    }
+
+    [Fact]
+    public async Task OzetGetirAsync_BugunkuYeniBasvuru_SonGunIleEslesir()
+    {
+        var servis = new SahteIstatistikServisi();
+        var ozet = await servis.OzetGetirAsync();
+
+        Assert.Equal(ozet.HaftalikTrend[^1].Adet, ozet.BugunkuYeniBasvuru);
     }
 }
