@@ -1,4 +1,5 @@
-// Test edeceğimiz AppDbContext sınıfı.
+// Test edeceğimiz AppDbContext ve Kullanici sınıfları.
+using BelediyeBasvuru.Core.Entities;
 using BelediyeBasvuru.Infrastructure.Data;
 // DbContextOptionsBuilder ve UseSqlServer için.
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,53 @@ public class VeritabaniTestleri
         finally
         {
             // Test geçse de kalsa da geçici veritabanını sil; geride çöp kalmasın.
+            await context.Database.EnsureDeletedAsync();
+        }
+    }
+
+    [Fact]
+    public async Task Kullanici_SqlServera_KaydedilipOkunabilir()
+    {
+        var baglanti = Environment.GetEnvironmentVariable("ConnectionStrings__Default");
+        if (string.IsNullOrWhiteSpace(baglanti))
+        {
+            return;
+        }
+
+        var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(baglanti)
+        {
+            InitialCatalog = $"BelediyeBasvuru_Test_{Guid.NewGuid():N}"
+        };
+
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseSqlServer(builder.ConnectionString)
+            .Options;
+
+        await using var context = new AppDbContext(options);
+        try
+        {
+            await context.Database.EnsureCreatedAsync();
+
+            var kullanici = new Kullanici
+            {
+                UserName = "vatandas.test@ornek.test",
+                NormalizedUserName = "VATANDAS.TEST@ORNEK.TEST",
+                Email = "vatandas.test@ornek.test",
+                NormalizedEmail = "VATANDAS.TEST@ORNEK.TEST",
+                AdSoyad = "Test Vatandaş"
+            };
+
+            context.Users.Add(kullanici);
+            await context.SaveChangesAsync();
+
+            var kayit = await context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == "vatandas.test@ornek.test");
+
+            Assert.NotNull(kayit);
+            Assert.Equal("Test Vatandaş", kayit.AdSoyad);
+        }
+        finally
+        {
             await context.Database.EnsureDeletedAsync();
         }
     }

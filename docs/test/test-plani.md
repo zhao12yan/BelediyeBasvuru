@@ -1,8 +1,8 @@
 # Test Planı
 
-**Sahibi:** Kişi 5 (Serhat Nas) · **Görev kodu:** K5-06 · **Aşama:** Sistem Çözümleme (Kontrol 1)
-**İlgili belgeler:** `docs/analiz/guvenlik-gereksinimleri.md` (GG-xx), `docs/analiz/gostergeler.md` (G1-G9)
-**Sonuç belgesi:** `docs/test/test-raporu.md` (Kontrol 2/3'te bu plana göre doldurulacak)
+**Sahibi:** Kişi 5 (Serhat Nas) · **Görev kodları:** K5-06, H1-K5 (#27), H2-K5 (#32), H3-K5 (#37), H4-K5 (#41)
+**İlgili belgeler:** `docs/analiz/guvenlik-gereksinimleri.md` (GG-xx), `docs/analiz/gostergeler.md` (G1-G9), `docs/test/kabul-kriterleri.md`
+**Sonuç belgesi:** `docs/test/test-raporu.md` (H1–H4 bulguları ve Kontrol 2/3 sonuçları)
 **Kapsam dışı:** Kullanıcı kabul testi (UAT) — bkz. `docs/test/kabul-testi.md` (Kişi 2)
 
 ## 1. Amaç
@@ -46,9 +46,11 @@ böylece "yazdık ama test etmedik" durumu görünür olur.
 | GG-08 (panel sadece Yönetici) | Entegrasyon | Planlı — K1-09 sonrası (şu an panel herkese açık, bkz. not aşağıda) |
 | GG-11 (SQL enjeksiyonu yok) | Kod incelemesi + statik arama | Her PR'da inceleyici kontrol eder |
 | GG-13 (CSRF belirteci) | Entegrasyon | Planlı — K1-10 sonrası |
-| GG-14 (dosya yükleme sınırı) | Birim | Planlı — K4 (`IDosyaDepolamaServisi`) sonrası |
-| G1-G5 (panel göstergeleri doğru hesaplanıyor) | Birim | ✅ Yazıldı: `SahteIstatistikServisiTestleri` (`YonetimTestleri.cs`) — G1 (açık başvuru toplamı) ve G5 (7 günlük trend) için |
-| Panel sayfası açılıyor | Entegrasyon (smoke) | ✅ Yazıldı: `YonetimPaneliTestleri.YonetimPaneli_200_Doner` |
+| GG-14 (dosya yükleme sınırı) | Birim | Planlı — K4 (`IDosyaDepolamaServisi`, #28) sonrası |
+| Durum geçiş kuralları (`Yeni/Atandi/Islemde/Cozuldu/Kapatildi/Reddedildi`) | Birim | ✅ Yazıldı: `BasvuruAkisTestleri` (`BasvuruAkisTestleri.cs`) |
+| G1-G5 (panel göstergeleri ve enum uyumu) | Birim | ✅ Yazıldı: `SahteIstatistikServisiTestleri` (`YonetimTestleri.cs`) — gerçek SQL sürümü #38/#30 sonrası |
+| Ana sayfa ve yönetim paneli açılıyor | Entegrasyon (smoke) | ✅ Yazıldı: `IskeletTestleri`, `YonetimPaneliTestleri.YonetimPaneli_200_Doner` |
+| SQL Server model ve `Kullanici` kalıcılığı | Veritabanı | ✅ Yazıldı: `VeritabaniTestleri` (CI'da çalışır; yerelde bağlantı dizesi yoksa atlanır) |
 
 > **Not (K5-02 ile ilgili bilinen eksik):** `/Yonetim` adresi şu an Identity henüz kurulmadığı için
 > `[Authorize]` ile korunmuyor (bkz. `YonetimController.cs` içindeki yorum). GG-08 testi, K1-09
